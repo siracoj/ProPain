@@ -19,7 +19,7 @@ function Player(playerNumber, character){
     ///////////////////////////////////////Player Functions////////////////////////////////////////////////
    
 Player.prototype.loadPlayer = function(GameState){
-    GameState.game.load.image('player', '/assets/gfx/player.png');
+    GameState.game.load.image('player', '/assets/gfx/Hank.png');
 }
     
 Player.prototype.enablePlayer = function(GameState){
