@@ -24,7 +24,7 @@ Player.prototype.loadPlayer = function(GameState){
     
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite
-    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height - 64, 'player');
+    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, 'player');
     
     // Enable physics on the player
     GameState.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);

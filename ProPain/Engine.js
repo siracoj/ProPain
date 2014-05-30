@@ -7,8 +7,19 @@ GameState.prototype.preload = function () {
     this.game.load.image('ground', '/assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
-    this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 128, 128);
-    this.game.load.image('bullet', '/assets/gfx/bullet.png');
+//    this.game.load.image('ex1', 'explosion/0002.png');
+//    this.game.load.image('ex2', 'explosion/0004.png');
+//    this.game.load.image('ex3', 'explosion/0007.png');
+//    this.game.load.image('ex4', 'explosion/0009.png');
+//    this.game.load.image('ex5', 'explosion/0010.png');
+//    this.game.load.image('ex6', 'explosion/0011.png');
+//    this.game.load.image('ex7', 'explosion/0013.png');
+//    this.game.load.image('ex8', 'explosion/0015.png');
+//    this.game.load.image('ex9', 'explosion/0017.png');
+//    this.game.load.image('ex10', 'explosion/0019.png');
+    this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 40, 40);
+    this.game.load.image('bullet', '/assets/gfx/tank.png');
+    
 };
 
 
@@ -16,6 +27,7 @@ GameState.prototype.preload = function () {
 GameState.prototype.create = function () {
     // Set stage background to something sky colored
     this.game.stage.backgroundColor = 0x4488cc;
+    
 
     // Define movement constants
     this.MAX_SPEED = 500; // pixels/second
@@ -131,7 +143,7 @@ GameState.prototype.getExplosion = function(x, y) {
 
         // Add an animation for the explosion that kills the sprite when the
         // animation is complete
-        var animation = explosion.animations.add('boom', [0,1,2,3], 60, false);
+        var animation = explosion.animations.add('boom', [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24], 100, false);
         animation.killOnComplete = true;
 
         // Add the explosion sprite to the group
