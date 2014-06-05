@@ -1,5 +1,7 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
+    //this.dale_gribble = new dale(2, 'DALE');
+    this.dale = new dale(2,'DALE');
 };
 
 // Load images and sounds
@@ -7,6 +9,7 @@ GameState.prototype.preload = function () {
     this.game.load.image('ground', '/assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
+    this.dale.loadPlayer(this);
 //    this.game.load.image('ex1', 'explosion/0002.png');
 //    this.game.load.image('ex2', 'explosion/0004.png');
 //    this.game.load.image('ex3', 'explosion/0007.png');
@@ -19,6 +22,7 @@ GameState.prototype.preload = function () {
 //    this.game.load.image('ex10', 'explosion/0019.png');
     this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', '/assets/gfx/tank.png');
+    this.game.load.image('background', '/assets/gfx/background.jpg'); //attempt to load a background image
     
 };
 
@@ -26,7 +30,8 @@ GameState.prototype.preload = function () {
 //
 GameState.prototype.create = function () {
     // Set stage background to something sky colored
-    this.game.stage.backgroundColor = 0x4488cc;
+    this.game.stage.backgroundColor=0x0066FF;
+
     
 
     // Define movement constants
@@ -41,6 +46,7 @@ GameState.prototype.create = function () {
 
     //Create Player
     this.player.enablePlayer(this);
+    this.dale.enablePlayer(this);
     
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
