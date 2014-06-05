@@ -31,7 +31,8 @@ GameState.prototype.preload = function () {
 GameState.prototype.create = function () {
     // Set stage background to something sky colored
     this.game.stage.backgroundColor=0x0066FF;
-
+    //this.game.stage.backgroundImage(0,0,'background');
+    this.add.sprite(0,0,'background');
     
 
     // Define movement constants
