@@ -24,7 +24,7 @@ Player.prototype.loadPlayer = function(GameState){
         GameState.game.load.image(this.playername, '/assets/gfx/Hank.png');
     }else if(this.character == 'DALE'){
         this.playername = 'player2';
-        GameState.game.load.image(this.playername, '/assets/gfx/dale_gribble.png');
+        GameState.game.load.image(this.playername, '/assets/gfx/dale.png');
     }
 }
     
