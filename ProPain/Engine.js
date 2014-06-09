@@ -1,7 +1,7 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
     //this.dale_gribble = new dale(2, 'DALE');
-    this.dale = new dale(2,'DALE');
+    this.dale = new Player(2,'DALE');
 };
 
 // Load images and sounds
@@ -10,16 +10,6 @@ GameState.prototype.preload = function () {
     
     this.player.loadPlayer(this);
     this.dale.loadPlayer(this);
-//    this.game.load.image('ex1', 'explosion/0002.png');
-//    this.game.load.image('ex2', 'explosion/0004.png');
-//    this.game.load.image('ex3', 'explosion/0007.png');
-//    this.game.load.image('ex4', 'explosion/0009.png');
-//    this.game.load.image('ex5', 'explosion/0010.png');
-//    this.game.load.image('ex6', 'explosion/0011.png');
-//    this.game.load.image('ex7', 'explosion/0013.png');
-//    this.game.load.image('ex8', 'explosion/0015.png');
-//    this.game.load.image('ex9', 'explosion/0017.png');
-//    this.game.load.image('ex10', 'explosion/0019.png');
     this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', '/assets/gfx/tank.png');
     this.game.load.image('background', '/assets/gfx/background.jpg'); //attempt to load a background image
