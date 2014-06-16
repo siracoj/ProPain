@@ -166,23 +166,6 @@ GameState.prototype.getExplosion = function(x, y) {
     return explosion;
 };
 
-// This function draws horizontal lines across the stage
-GameState.prototype.drawHeightMarkers = function() {
-    // Create a bitmap the same size as the stage
-    var bitmap = this.game.add.bitmapData(this.game.width, this.game.height);
-
-    // These functions use the canvas context to draw lines using the canvas API
-    for(y = this.game.height-32; y >= 64; y -= 32) {
-        bitmap.context.beginPath();
-        bitmap.context.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-        bitmap.context.moveTo(0, y);
-        bitmap.context.lineTo(this.game.width, y);
-        bitmap.context.stroke();
-    }
-
-    this.game.add.image(0, 0, bitmap);
-};
-
 // The update() method is called every frame
 GameState.prototype.update = function() {
     if (this.game.time.fps !== 0) {
