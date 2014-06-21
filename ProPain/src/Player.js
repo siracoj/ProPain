@@ -2,7 +2,7 @@
 //Holds player object, and movement functions
 
 
-function Player(playerNumber, character){
+function Player(playerNumber, character) {
     
     //////////////////////////////////////////Properties////////////////////////////////////////////////////
 
@@ -21,7 +21,8 @@ function Player(playerNumber, character){
 Player.prototype.loadPlayer = function(GameState){
     if(this.character == 'HANK'){
         this.playername = 'player1';
-        GameState.game.load.image(this.playername, '/assets/gfx/Hank.png');
+        //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
+        GameState.game.load.spritesheet(this.playername, '/assets/gfx/hanksprite2.png',32,40,5);
     }else if(this.character == 'DALE'){
         this.playername = 'player2';
         GameState.game.load.image(this.playername, '/assets/gfx/dale.png');
@@ -31,8 +32,11 @@ Player.prototype.loadPlayer = function(GameState){
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite
     this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
-    
+    this.playername
+    this.sprite.animations.add('run');
+    this.sprite.animations.play('run',6,true);
     // Enable physics on the player
+    this.sprite.health =50;
     GameState.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
     // Make player collide with world boundaries so he doesn't leave the stage
@@ -45,7 +49,11 @@ Player.prototype.enablePlayer = function(GameState){
     this.sprite.body.drag.setTo(GameState.DRAG, 0); // x, y
         
 }
-    
+
+//----------------------FUNCTION I ADDED----------------
+//dead copy of explosion
+
+//----------------------------END OF FUCNTION----------------------
 Player.prototype.movePlayer = function(GameState){
         
     // Collide the player with the ground
@@ -54,12 +62,20 @@ Player.prototype.movePlayer = function(GameState){
     if (GameState.leftInputIsActive()) {
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
+        //hanks.animation.play('run',15,true);
+        
+        this.sprite.animations.play('run',15, true);
+        
+        
     } else if (GameState.rightInputIsActive()) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
     } else {
         this.sprite.body.acceleration.x = 0;
+        this.sprite.animations.play('run',15, false);
     }
+    //insert animation call her
+    
         
 }
     
