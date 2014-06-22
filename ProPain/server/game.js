@@ -8,6 +8,15 @@ var socket,
 
 function init() {
     players = [];
+    
+    //Socket configuration
+    socket = io.listen(80);
+    socket.configure(function() {
+        socket.set("transports", ["websocket"]);
+        socket.set("log level", 2);
+    });
+    
+    
 };
 
 init();
