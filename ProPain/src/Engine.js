@@ -1,8 +1,8 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
-    //this.dale_gribble = new dale(2, 'DALE');
     this.dale = new Player(2,'DALE');
 };
+var text;
 
 // Load images and sounds
 GameState.prototype.preload = function () {
@@ -38,6 +38,13 @@ GameState.prototype.create = function () {
     //Create Player
     this.player.enablePlayer(this);
     this.dale.enablePlayer(this);
+    
+    //Create text
+    this.healthDisplay = this.game.add.text(
+        this.game.world.centerX, this.game.world.centerY+250, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+    );
+
+    //var t = game.add.text(game.world.centerX-300, 0, text, style);
     
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
@@ -176,6 +183,9 @@ GameState.prototype.update = function() {
     //Update Player
     this.player.movePlayer(this);
     this.player.jumpPlayer(this);
+    
+    //Update Health
+   this.healthDisplay.setText(this.player.sprite.health);
     
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
