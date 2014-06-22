@@ -39,10 +39,6 @@ GameState.prototype.create = function () {
     this.player.enablePlayer(this);
     this.dale.enablePlayer(this);
     
-    //Create text
-    this.healthDisplay = this.game.add.text(
-        this.game.world.centerX, this.game.world.centerY+250, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
-    );
 
     //var t = game.add.text(game.world.centerX-300, 0, text, style);
     
@@ -61,6 +57,10 @@ GameState.prototype.create = function () {
         this.ground.add(groundBlock);
     }
     
+    //Create text
+    this.healthDisplay = this.game.add.text(
+        this.game.world.centerX, this.game.world.centerY+280, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+    );
     // Create an object pool of bullets
     this.bulletPool = this.game.add.group();
     for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
@@ -201,9 +201,14 @@ GameState.prototype.update = function() {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
     }, this);
 
-    
+    //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
         this.shootBullet();
+    }
+    
+    //Punch
+    if(this.input.keyboard.justPressed(Phaser.Keyboard.S)){
+     this.player.basicAttackPlayer();   
     }
 };
 
