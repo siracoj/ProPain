@@ -26,7 +26,7 @@ GameState.prototype.create = function () {
     
 
     // Define movement constants
-    this.MAX_SPEED = 300; // pixels/second
+    this.MAX_SPEED = 250; // pixels/second
     this.ACCELERATION = 1500; // pixels/second/second
     this.DRAG = 600; // pixels/second
     this.GRAVITY = 2600; // pixels/second/second

@@ -22,7 +22,7 @@ Player.prototype.loadPlayer = function(GameState){
     if(this.character == 'HANK'){
         this.playername = 'player1';
         //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
-        GameState.game.load.spritesheet(this.playername, 'assets/gfx/hanksprite2.png',32,40,6);
+        GameState.game.load.spritesheet(this.playername, 'assets/gfx/hanksprite3.png',32,40,13);
     }else if(this.character == 'DALE'){
         this.playername = 'player2';
         GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
@@ -33,7 +33,8 @@ Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
     this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
     this.playername
-    this.sprite.animations.add('run',[1,2,3,4],true);
+    this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
+    this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
     
     
     //player health
@@ -62,13 +63,13 @@ Player.prototype.movePlayer = function(GameState){
     if (GameState.leftInputIsActive()) {
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
-        
+        this.sprite.animations.play('walkLeft');
         
         
     } else if (GameState.rightInputIsActive()) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
-        this.sprite.animations.play('run',5, false);
+        this.sprite.animations.play('walkRight');
     } else {
         this.sprite.body.acceleration.x = 0;
         this.sprite.animations.stop();
