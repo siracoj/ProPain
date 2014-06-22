@@ -22,10 +22,10 @@ Player.prototype.loadPlayer = function(GameState){
     if(this.character == 'HANK'){
         this.playername = 'player1';
         //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
-        GameState.game.load.spritesheet(this.playername, '/assets/gfx/hanksprite2.png',32,40,5);
+        GameState.game.load.spritesheet(this.playername, 'assets/gfx/hanksprite2.png',32,40,6);
     }else if(this.character == 'DALE'){
         this.playername = 'player2';
-        GameState.game.load.image(this.playername, '/assets/gfx/dale.png');
+        GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
     }
 }
     
@@ -33,7 +33,7 @@ Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
     this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
     this.playername
-    this.sprite.animations.add('run');
+    this.sprite.animations.add('run',[1,2,3,4],true);
     
     
     //player health

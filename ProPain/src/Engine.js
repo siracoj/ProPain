@@ -6,13 +6,13 @@ var text;
 
 // Load images and sounds
 GameState.prototype.preload = function () {
-    this.game.load.image('ground', '/assets/gfx/ground.png');
+    this.game.load.image('ground', 'assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
     this.dale.loadPlayer(this);
-    this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 40, 40);
-    this.game.load.image('bullet', '/assets/gfx/tank.png');
-    this.game.load.image('background', '/assets/gfx/background.jpg'); //attempt to load a background image
+    this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
+    this.game.load.image('bullet', 'assets/gfx/tank.png');
+    this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
     
 };
 
@@ -26,7 +26,7 @@ GameState.prototype.create = function () {
     
 
     // Define movement constants
-    this.MAX_SPEED = 500; // pixels/second
+    this.MAX_SPEED = 300; // pixels/second
     this.ACCELERATION = 1500; // pixels/second/second
     this.DRAG = 600; // pixels/second
     this.GRAVITY = 2600; // pixels/second/second
