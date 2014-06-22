@@ -5,7 +5,7 @@
 function Player(playerNumber, character){
     
     //////////////////////////////////////////Properties////////////////////////////////////////////////////
-    
+
     //Player 1,2,...
     this.playerNumber = playerNumber;  
     //Chosen character

@@ -166,6 +166,7 @@ GameState.prototype.getExplosion = function(x, y) {
     return explosion;
 };
 
+
 // The update() method is called every frame
 GameState.prototype.update = function() {
     if (this.game.time.fps !== 0) {
