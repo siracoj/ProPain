@@ -1,20 +1,22 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
+<<<<<<< HEAD
     this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
     if(!socket.socket.connected){
         this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
     }
-};
+
+var text;
 
 // Load images and sounds
 GameState.prototype.preload = function () {
-    this.game.load.image('ground', '/assets/gfx/ground.png');
+    this.game.load.image('ground', 'assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
     this.dale.loadPlayer(this);
-    this.game.load.spritesheet('explosion', '/assets/gfx/explosion.png', 40, 40);
-    this.game.load.image('bullet', '/assets/gfx/tank.png');
-    this.game.load.image('background', '/assets/gfx/background.jpg'); //attempt to load a background image
+    this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
+    this.game.load.image('bullet', 'assets/gfx/tank.png');
+    this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
     
 };
 
@@ -28,7 +30,7 @@ GameState.prototype.create = function () {
     
 
     // Define movement constants
-    this.MAX_SPEED = 500; // pixels/second
+    this.MAX_SPEED = 250; // pixels/second
     this.ACCELERATION = 1500; // pixels/second/second
     this.DRAG = 600; // pixels/second
     this.GRAVITY = 2600; // pixels/second/second
@@ -40,6 +42,9 @@ GameState.prototype.create = function () {
     //Create Player
     this.player.enablePlayer(this);
     this.dale.enablePlayer(this);
+    
+
+    //var t = game.add.text(game.world.centerX-300, 0, text, style);
     
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
@@ -56,6 +61,10 @@ GameState.prototype.create = function () {
         this.ground.add(groundBlock);
     }
     
+    //Create text
+    this.healthDisplay = this.game.add.text(
+        this.game.world.centerX, this.game.world.centerY+280, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+    );
     // Create an object pool of bullets
     this.bulletPool = this.game.add.group();
     for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
@@ -179,6 +188,9 @@ GameState.prototype.update = function() {
     this.player.movePlayer(this);
     this.player.jumpPlayer(this);
     
+    //Update Health
+   this.healthDisplay.setText(this.player.sprite.health);
+    
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
@@ -193,9 +205,14 @@ GameState.prototype.update = function() {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
     }, this);
 
-    
+    //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
         this.shootBullet();
+    }
+    
+    //Punch
+    if(this.input.keyboard.justPressed(Phaser.Keyboard.S)){
+     this.player.basicAttackPlayer();   
     }
 };
 

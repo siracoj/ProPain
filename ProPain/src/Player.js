@@ -2,7 +2,7 @@
 //Holds player object, and movement functions
 
 
-function Player(playerNumber, character){
+function Player(playerNumber, character) {
     
     //////////////////////////////////////////Properties////////////////////////////////////////////////////
 
@@ -21,18 +21,29 @@ function Player(playerNumber, character){
 Player.prototype.loadPlayer = function(GameState){
     if(this.character == 'HANK'){
         this.playername = 'player1';
-        GameState.game.load.image(this.playername, '/assets/gfx/Hank.png');
+        //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
+        GameState.game.load.spritesheet(this.playername, 'assets/gfx/hanksprite3.png',32,40,16);
     }else if(this.character == 'DALE'){
         this.playername = 'player2';
-        GameState.game.load.image(this.playername, '/assets/gfx/dale.png');
+        GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
     }
 }
     
 Player.prototype.enablePlayer = function(GameState){
-    //Load Player sprite
+    //Load Player sprite and animations
     this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
+    this.playername
+    this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
+    this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
+    this.sprite.animations.add('punch',[15],2,false);
+    this.sprtie.animations.add('stand',[14],2,false);
     
+    
+    //player health
+    this.sprite.health =100;
+
     // Enable physics on the player
+    
     GameState.game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
 
     // Make player collide with world boundaries so he doesn't leave the stage
@@ -45,7 +56,7 @@ Player.prototype.enablePlayer = function(GameState){
     this.sprite.body.drag.setTo(GameState.DRAG, 0); // x, y
         
 }
-    
+
 Player.prototype.movePlayer = function(GameState){
         
     // Collide the player with the ground
@@ -54,13 +65,26 @@ Player.prototype.movePlayer = function(GameState){
     if (GameState.leftInputIsActive()) {
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
+        this.sprite.animations.play('walkLeft');
+        
+        
     } else if (GameState.rightInputIsActive()) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
+        this.sprite.animations.play('walkRight');
     } else {
         this.sprite.body.acceleration.x = 0;
+        this.sprite.animations.stop();
     }
+    //insert animation call her
+    
         
+}
+
+Player.prototype.basicAttackPlayer = function(GameState){
+    this.sprite.animations.play('punch');
+    this.sprite.animations.play('stand');
+    this.sprite.animations.stop();
 }
     
 Player.prototype.jumpPlayer = function(GameState){
