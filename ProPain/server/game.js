@@ -12,10 +12,8 @@ function init() {
     
     //Socket configuration
     socket = io.listen(8000);
-    socket.configure(function() {
-        socket.set("transports", ["websocket"]);
-        socket.set("log level", 2);
-    });
+    socket.set("transports", ["websocket"]);
+    socket.set("log level", 2);
     
     setEventHandlers();
 };
