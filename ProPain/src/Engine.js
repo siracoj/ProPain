@@ -9,7 +9,7 @@ var GameState = function (game) {
     this.remotePlayers = [];
     
     try{
-       this.socket = io.connect("http://propaingame.com", {port: 80, transports: ["websocket"]});
+       this.socket = io.connect("ws://propaingame.com", {port: 80, transports: ["websocket"]});
         // Start listening for events
 	   this.setEventHandlers();
     }catch(err){
