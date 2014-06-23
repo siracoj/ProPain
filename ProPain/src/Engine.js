@@ -75,6 +75,9 @@ GameState.prototype.preload = function () {
 //
 GameState.prototype.create = function () {
     // Set stage background to something sky colored
+    this.game.stage.scale.pageAlignHorizontally = true;
+    this.game.stage.scale.pageAlignVeritcally = true;
+
     this.game.stage.backgroundColor=0x0066FF;
     //this.game.stage.backgroundImage(0,0,'background');
     this.add.sprite(0,0,'background');
@@ -235,7 +238,6 @@ GameState.prototype.getExplosion = function(x, y) {
 
 // The update() method is called every frame
 GameState.prototype.update = function() {
-    
     
     //Show FPS
     if (this.game.time.fps !== 0) {
