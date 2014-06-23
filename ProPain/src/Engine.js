@@ -11,7 +11,7 @@ var GameState = function (game) {
     
    // this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
     //if(!socket.socket.connected){
-       this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
+       this.socket = io.connect("http://raineystreet", {port: 3000, transports: ["websocket"]});
   //  }
     // Start listening for events
 	this.setEventHandlers();
