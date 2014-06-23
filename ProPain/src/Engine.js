@@ -1,17 +1,69 @@
+var text;
+
+
+
+///////////////////////////////////GAMESTATE//////////////////////////////////
+
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
+    this.remotePlayers = [];
+    
+    
    // this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
     //if(!socket.socket.connected){
        this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
   //  }
+    // Start listening for events
+	this.setEventHandlers();
+    
 }
-var text;
+
+///////////////////////////////////////EVENTS//////////////////////////////////
+GameState.prototype.setEventHandlers = function() {
+    this.socket.on("connect", this.onSocketConnected);
+    this.socket.on("disconnect", this.onSocketDisconnect);
+    this.socket.on("new player", this.onNewPlayer);
+    this.socket.on("move player", this.onMovePlayer);
+    this.socket.on("remove player", this.onRemovePlayer);
+}
+GameState.prototype.onSocketConnected = function() {
+    console.log("Connected to socket server");
+    this.socket.emit("new player", {x: this.player.getX, y: this.player.getY}); 
+};
+
+GameState.prototype.onSocketDisconnect = function() {
+    console.log("Disconnected from socket server");
+};
+
+GameState.prototype.onNewPlayer = function(data) {
+    console.log("New player connected: "+data.id);
+    
+    var newPlayer = new Player(2, 'HANK');
+    newPlayer.id = data.id;
+    this.remotePlayers.push(newPlayer);
+    
+};
+
+GameState.prototype.onMovePlayer = function(data) {
+
+};
+
+GameState.prototype.onRemovePlayer = function(data) {
+
+};
+
+
+/////////////////////////////GAMESTATE FUNCTIONS////////////////////////////
 
 // Load images and sounds
 GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
+    for(i=0; i < this.remotePlayers.length; i++){
+        this.remotePlayers[i].loadPlayer(this);
+    }
+    
     //this.dale.loadPlayer(this);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
@@ -40,6 +92,10 @@ GameState.prototype.create = function () {
 
     //Create Player
     this.player.enablePlayer(this);
+    var i;
+    for(i=0; i < this.remotePlayers.length; i++){
+        this.remotePlayers[i].enablePlayer(this);
+    }
     //this.dale.enablePlayer(this);
     
 
@@ -186,6 +242,8 @@ GameState.prototype.update = function() {
     //Update Player
     this.player.movePlayer(this);
     this.player.jumpPlayer(this);
+    
+
     
     //Update Health
    this.healthDisplay.setText(this.player.sprite.health);

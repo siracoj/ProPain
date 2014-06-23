@@ -21,6 +21,7 @@ function init() {
 //Socket connection events
 var setEventHandlers = function() {
     socket.sockets.on("connection", onSocketConnection);
+   
 };
 
 function onSocketConnection(client) {

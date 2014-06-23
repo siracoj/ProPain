@@ -15,9 +15,30 @@ function Player(playerNumber, character) {
     // Set a flag for tracking if the player can adjust their jump height
     this.canVariableJump = true;
     
-}   
+    
+}
+
+//////////////////////////////////////////////////////Getters and Setters////////////////////////////////////////////
+
+Player.prototype.getX = function() {
+    return this.sprite.body.x;
+}
+
+Player.prototype.getY = function() {
+    return this.sprite.body.y;
+}
+
+Player.prototype.setX = function(newX) {
+    this.sprite.body.x = newX;
+}
+
+Player.prototype.setY = function(newY) {
+    this.sprite.body.y = newY;
+}
     ///////////////////////////////////////Player Functions////////////////////////////////////////////////
-   
+
+
+
 Player.prototype.loadPlayer = function(GameState){
     //if(this.character == 'HANK'){
         this.playername = 'player1';
@@ -31,11 +52,12 @@ Player.prototype.loadPlayer = function(GameState){
     
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
-    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
+    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-100, this.playername);
     this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
     this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
-    this.sprite.animations.add('punch',[15],2,false);
     //this.sprtie.animations.add('stand',[14],2,false);
+    this.sprite.animations.add('punch',[15],2,false);
+
     
     
     //player health
