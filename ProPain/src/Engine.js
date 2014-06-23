@@ -8,13 +8,13 @@ var GameState = function (game) {
     this.player = new Player(1, 'HANK');
     this.remotePlayers = [];
     
-    
-   // this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
-    //if(!socket.socket.connected){
-       this.socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
-  //  }
-    // Start listening for events
-	this.setEventHandlers();
+    try{
+       this.socket = io.connect("http://propaingame.com", {port: 80, transports: ["websocket"]});
+        // Start listening for events
+	   this.setEventHandlers();
+    }catch(err){
+        console.log("Server could not be reached");
+    }
     
 }
 
@@ -235,6 +235,9 @@ GameState.prototype.getExplosion = function(x, y) {
 
 // The update() method is called every frame
 GameState.prototype.update = function() {
+    
+    
+    //Show FPS
     if (this.game.time.fps !== 0) {
         this.fpsText.setText(this.game.time.fps + ' FPS');
     }
