@@ -7,7 +7,7 @@ var util = require("util"),
     http = require('http'),
     app = express(),
     server = http.createServer(app),
-    PlayerData = require("./server/playerdata").PlayerData;
+    PlayerData = require("./playerdata").PlayerData;
 
 var socket,
     players;
