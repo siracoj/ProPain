@@ -19,24 +19,23 @@ function Player(playerNumber, character) {
     ///////////////////////////////////////Player Functions////////////////////////////////////////////////
    
 Player.prototype.loadPlayer = function(GameState){
-    if(this.character == 'HANK'){
+    //if(this.character == 'HANK'){
         this.playername = 'player1';
         //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
-        GameState.game.load.spritesheet(this.playername, 'assets/gfx/hanksprite3.png',32,40,16);
-    }else if(this.character == 'DALE'){
+        GameState.game.load.spritesheet(this.playername, '/assets/gfx/hanksprite3.png',32,40,16);
+    /*}else if(this.character == 'DALE'){
         this.playername = 'player2';
         GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
-    }
+    }*/
 }
     
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
     this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-20, this.playername);
-    this.playername
     this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
     this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
     this.sprite.animations.add('punch',[15],2,false);
-    this.sprtie.animations.add('stand',[14],2,false);
+    //this.sprtie.animations.add('stand',[14],2,false);
     
     
     //player health

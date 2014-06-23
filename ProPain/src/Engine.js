@@ -1,11 +1,10 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
-<<<<<<< HEAD
-    this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
-    if(!socket.socket.connected){
-        this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
-    }
-
+   // this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
+    //if(!socket.socket.connected){
+       this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
+  //  }
+}
 var text;
 
 // Load images and sounds
@@ -13,7 +12,7 @@ GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
     
     this.player.loadPlayer(this);
-    this.dale.loadPlayer(this);
+    //this.dale.loadPlayer(this);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
@@ -41,7 +40,7 @@ GameState.prototype.create = function () {
 
     //Create Player
     this.player.enablePlayer(this);
-    this.dale.enablePlayer(this);
+    //this.dale.enablePlayer(this);
     
 
     //var t = game.add.text(game.world.centerX-300, 0, text, style);
