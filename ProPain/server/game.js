@@ -2,16 +2,52 @@
 
 var util = require("util"),
     io = require("socket.io"),
+    express = require('express'),
+    UUID = require('node-uuid'),
+    http = require('http'),
+    app = express(),
+    server = http.createServer(app),
     PlayerData = require("./playerdata").PlayerData;
 
 var socket,
     players;
 
+
+
+   //Tell the server to listen for incoming connections
+    server.listen(80)
+
+        //Log something so we know that it succeeded.
+    console.log('\t :: Express :: Listening on port ' + gameport );
+
+        //By default, we forward the / path to index.html automatically.
+    app.get( '/', function( req, res ){
+        console.log('trying to load %s', __dirname + '/index.html');
+        res.sendfile( '/index.html' , { root:__dirname });
+    });
+
+
+        //This handler will listen for requests on /*, any file from the root of our server.
+        //See expressjs documentation for more info on routing.
+
+    app.get( '/*' , function( req, res, next ) {
+
+            //This is the current file they have requested
+        var file = req.params[0];
+
+            //For debugging, we can track what files are requested.
+        if(verbose) console.log('\t :: Express :: file requested : ' + file);
+
+            //Send the requesting client the file.
+        res.sendfile( __dirname + '/' + file );
+
+    }); //app.get *
+
 function init() {
     players = [];
     
     //Socket configuration
-    socket = io.listen(3000);
+    socket = io.listen(server);
     socket.set("transports", ["websocket"]);
     
     setEventHandlers();
