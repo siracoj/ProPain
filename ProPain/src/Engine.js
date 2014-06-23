@@ -1,7 +1,9 @@
 var GameState = function (game) {
     this.player = new Player(1, 'HANK');
-    //this.dale_gribble = new dale(2, 'DALE');
-    this.dale = new Player(2,'DALE');
+    this.socket = io.connect("http://www.propaingame.com", {port: 8000, transports: ["websocket"]});
+    if(!socket.socket.connected){
+        this.socket = io.connect("http://raineystreet", {port: 8000, transports: ["websocket"]});
+    }
 };
 
 // Load images and sounds
