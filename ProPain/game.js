@@ -20,6 +20,7 @@ var socket,
         //Log something so we know that it succeeded.
     console.log('\t :: Express :: Listening on port 80' );
 
+    app.use(express.static(__dirname));
         //By default, we forward the / path to index.html automatically.
     app.get( '/', function( req, res ){
         console.log('trying to load %s', __dirname + '/GamePage.html');
