@@ -2,10 +2,11 @@
 //Holds player object, and movement functions
 
 
-function Player(playerNumber, character) {
+function Player(playerNumber, character, id) {
     
     //////////////////////////////////////////Properties////////////////////////////////////////////////////
 
+    this.id = id;
     //Player 1,2,...
     this.playerNumber = playerNumber;  
     //Chosen character
@@ -16,34 +17,33 @@ function Player(playerNumber, character) {
     this.canVariableJump = true;
     
     
-}
+};
 
 //////////////////////////////////////////////////////Getters and Setters////////////////////////////////////////////
 
 Player.prototype.getX = function() {
     return this.sprite.body.x;
-}
+};
 
 Player.prototype.getY = function() {
     return this.sprite.body.y;
-}
+};
 
 Player.prototype.setX = function(newX) {
     this.sprite.body.x = newX;
-}
+};
 
 Player.prototype.setY = function(newY) {
     this.sprite.body.y = newY;
-}
+};
     ///////////////////////////////////////Player Functions////////////////////////////////////////////////
 
 
 
 Player.prototype.loadPlayer = function(GameState){
     //if(this.character == 'HANK'){
-        this.playername = 'player1';
         //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
-        GameState.game.load.spritesheet(this.playername, '/assets/gfx/hanksprite3.png',32,40,16);
+        GameState.game.load.spritesheet(this.id, '/assets/gfx/hanksprite3.png',32,40,16);
     /*}else if(this.character == 'DALE'){
         this.playername = 'player2';
         GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
@@ -52,7 +52,7 @@ Player.prototype.loadPlayer = function(GameState){
     
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
-    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-100, this.playername);
+    this.sprite = GameState.game.add.sprite(GameState.game.width / 2, GameState.game.height-100, this.id);
     this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
     this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
     //this.sprtie.animations.add('stand',[14],2,false);
