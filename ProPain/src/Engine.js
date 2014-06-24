@@ -1,34 +1,43 @@
-var text;
+var text, socket, globalGame;
 
 
 
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
 var GameState = function (game) {
-    this.player = new Player(1, 'HANK');
+    this.player = new Player(1, 'HANK', 'local');
     this.remotePlayers = [];
-    
+    this.game = game;
+    globalGame = game;
+/*
     try{
-       this.socket = io.connect("ws://propaingame.com", {port: 80, transports: ["websocket"]});
+       this.socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
         // Start listening for events
-	   this.setEventHandlers();
+       this.setEventHandlers();
     }catch(err){
         console.log("Server could not be reached");
+        console.log(err);
     }
-    
-}
-
+*/
+};
+/*
 ///////////////////////////////////////EVENTS//////////////////////////////////
 GameState.prototype.setEventHandlers = function() {
-    this.socket.on("connect", this.onSocketConnected);
-    this.socket.on("disconnect", this.onSocketDisconnect);
-    this.socket.on("new player", this.onNewPlayer);
-    this.socket.on("move player", this.onMovePlayer);
-    this.socket.on("remove player", this.onRemovePlayer);
-}
+    socket.on("connect", this.onSocketConnected);
+    socket.on("new player", this.onNewPlayer);
+    socket.on("move player", this.onMovePlayer);
+    socket.on("remove player", this.onRemovePlayer);
+    socket.on("disconnect", this.onSocketDisconnect);
+};
 GameState.prototype.onSocketConnected = function() {
     console.log("Connected to socket server");
-    this.socket.emit("new player", {x: this.player.getX, y: this.player.getY}); 
+    try{
+        socket.emit("new player", {x: this.game.width/2 , y: this.game.height-100}); 
+        console.log("Player sent");
+    }catch(err){
+        console.log("PLayer could not be sent");
+        console.log(err.message);
+    }
 };
 
 GameState.prototype.onSocketDisconnect = function() {
@@ -51,7 +60,7 @@ GameState.prototype.onMovePlayer = function(data) {
 GameState.prototype.onRemovePlayer = function(data) {
 
 };
-
+*/
 
 /////////////////////////////GAMESTATE FUNCTIONS////////////////////////////
 
@@ -95,6 +104,15 @@ GameState.prototype.create = function () {
 
     //Create Player
     this.player.enablePlayer(this);
+    try{
+       socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
+       // Start listening for events
+       this.setEventHandlers();
+    }catch(err){
+       console.log("Server could not be reached");
+       console.log(err);
+    }
+
     var i;
     for(i=0; i < this.remotePlayers.length; i++){
         this.remotePlayers[i].enablePlayer(this);
@@ -317,5 +335,43 @@ GameState.prototype.upInputIsActive = function(duration) {
         this.game.input.activePointer.x < this.game.width/2 + this.game.width/4);
 
     return isActive;
+};
+GameState.prototype.setEventHandlers = function() {
+    socket.on("connect", this.onSocketConnected);
+    socket.on("new player", this.onNewPlayer);
+    socket.on("move player", this.onMovePlayer);
+    socket.on("remove player", this.onRemovePlayer);
+    socket.on("disconnect", this.onSocketDisconnect);
+};
+GameState.prototype.onSocketConnected = function() {
+    console.log("Connected to socket server");
+    try{
+        socket.emit("new player", {x: globalGame.width/2 , y: globalGame.height-100});
+        console.log("Player sent");
+    }catch(err){
+        console.log("PLayer could not be sent");
+        console.log(err.message);
+    }
+};
+
+GameState.prototype.onSocketDisconnect = function() {
+    console.log("Disconnected from socket server");
+};
+
+GameState.prototype.onNewPlayer = function(data) {
+    console.log("New player connected: "+data.id);
+
+    var newPlayer = new Player(2, 'HANK', data.id);
+    newPlayer.id = data.id;
+    this.remotePlayers.push(newPlayer);
+
+};
+
+GameState.prototype.onMovePlayer = function(data) {
+
+};
+
+GameState.prototype.onRemovePlayer = function(data) {
+
 };
 

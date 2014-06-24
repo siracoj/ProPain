@@ -1,12 +1,11 @@
 //Place holder file for server operations
 
 var util = require("util"),
-    io = require("socket.io"),
-    express = require('express'),
     UUID = require('node-uuid'),
-    http = require('http'),
+    express = require('express'),
     app = express(),
-    server = http.createServer(app),
+    server = require('http').Server(app),
+    io = require("socket.io")(server),
     PlayerData = require("./playerdata").PlayerData;
 
 var socket,
@@ -48,23 +47,21 @@ function init() {
     players = [];
     
     //Socket configuration
-    socket = io.listen(server);
-    socket.set("transports", ["websocket"]);
     
     setEventHandlers();
 };
 
 //Socket connection events
 var setEventHandlers = function() {
-    socket.sockets.on("connection", onSocketConnection);
+    io.sockets.on("connection", onSocketConnection);
    
 };
 
 function onSocketConnection(client) {
-    util.log("New player has connected: "+client.id);
-    client.on("disconnect", onClientDisconnect);
+    util.log("New Player connected: "+client.id);
     client.on("new player", onNewPlayer);
     client.on("move player", onMovePlayer);
+    client.on("disconnect", onClientDisconnect);
 };
 
 function onClientDisconnect() {
@@ -73,11 +70,17 @@ function onClientDisconnect() {
 
 function onNewPlayer(data){
     //create player server data
+    util.log("Player data arriving");
     var newPlayer = new PlayerData(data.x, data.y);
     newPlayer.id = this.id;
-    
+    //util.log("Player "+newPlayer.id+" is at position: "+newPlayer.getX()+","+newPlayer.getY());
     //send player to other clients
-    this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
+    try{
+        this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
+        util.log("Broadcast of player data successfull");
+    }catch(err){
+        util.log("Could not Broadcast player data: "+ err.message);
+    }
     
     //get existing players for the new client
     var i, existingPlayer;
