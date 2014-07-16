@@ -22,17 +22,102 @@
         <div id="propain">
 
             <script type="text/javascript">
+                try{
+                    socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
+                }catch(err){
+                    console.log("Server could not be reached");
+                    console.log(err);
+                }
 
+                var remoteLeft = false;
+                var remoteRight = false;
+                var remoteJump = false;
+                var remoteAttack = false;
+                var remoteThrow = false;
+                var remotePlayers = [];
                 window.onload = function() {
 
-                    var game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain', { preload: preload, create: create });
+                    game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain', { preload: preload, create: create });
                     function preload () {
                     }
                     function create () {                   
                         game.state.add('game', GameState, true);
+                        setEventHandlers();
                     }
                 };
-        
+                var setEventHandlers = function() {
+                        socket.on("connect", this.onSocketConnected);
+                        socket.on("new player", this.onNewPlayer);
+                        socket.on("moveLeft", this.onMoveLeft);
+                        socket.on("moveRight", this.onMoveRight);
+                        socket.on("moveStop", this.onMoveStop);
+                        socket.on("jump", this.onJump);
+                        socket.on("jumpStop", this.onJumpStop);
+                        socket.on("attack", this.onAttack);
+                        socket.on("throw", this.onProjectile);
+                        socket.on("remove player", this.onRemovePlayer);
+                        socket.on("disconnect", this.onSocketDisconnect);
+                    };
+                function onSocketConnected() {
+                        console.log("Connected to socket server");
+                        /*try{
+                            socket.emit("new player", {x: game.width/2 , y: game.height-100});
+                            console.log("Player sent");
+                        }catch(err){
+                            console.log("PLayer could not be sent");
+                            console.log(err.message);
+                        }*/
+                    };
+
+
+
+                function onSocketDisconnect() {
+                       console.log("Disconnected from socket server");
+                   };
+
+                function onNewPlayer(data){
+                       console.log("New player connected: "+data.id);
+                       var newPlayer = new Player(2, 'HANK2', data.id, data.x, data.y);
+                       try{
+                           newPlayer.enablePlayer(game);
+                           remotePlayers.push(newPlayer);
+                       }catch(err){
+                           console.log("New Player failed to be created");
+                           console.log(err);
+                       }
+                   };
+
+                function onMoveLeft(data) {
+                   console.log('left');
+                   remoteLeft = true;
+                  };
+                function onMoveRight(data) {
+                   console.log('right');
+                   remoteRight = true;
+                };
+                function onMoveStop(data) {
+                   console.log('stop');
+                   remoteRight = false;
+                   remoteLeft = false;
+                };
+                function onJump(data) {
+                   console.log('jump');
+                   remoteJump = true;
+                };
+                function onAttack(data) {
+                   console.log('Attack');
+                   remoteAttack = true;
+                };
+                function onProjectile(data) {
+                   console.log('throw');
+                   remoteThrow = true;
+                };
+                function onJumpStop(data) {
+                   console.log('stop jump');
+                   remoteJump = false;
+                };
+                function onRemovePlayer(data) {
+                };
 
             </script>
         </div>

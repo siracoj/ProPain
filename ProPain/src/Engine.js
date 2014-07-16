@@ -1,24 +1,15 @@
 var text, socket, globalGame;
 
 
-
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
 var GameState = function (game) {
-    this.player = new Player(1, 'HANK', 'local');
+    this.player = new Player(1, 'HANK', 'local', game.width/2 ,game.height-100);
     this.remotePlayers = [];
     this.game = game;
     globalGame = game;
-/*
-    try{
-       this.socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
-        // Start listening for events
-       this.setEventHandlers();
-    }catch(err){
-        console.log("Server could not be reached");
-        console.log(err);
-    }
-*/
+    // Start listening for events
+    //this.setEventHandlers();
 };
 /*
 ///////////////////////////////////////EVENTS//////////////////////////////////
@@ -68,11 +59,8 @@ GameState.prototype.onRemovePlayer = function(data) {
 GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
     
-    this.player.loadPlayer(this);
-    for(i=0; i < this.remotePlayers.length; i++){
-        this.remotePlayers[i].loadPlayer(this);
-    }
-    
+    this.game.load.spritesheet('hank', '/assets/gfx/hanksprite3.png',32,40,16);    
+    this.game.load.spritesheet('hank2', '/assets/gfx/hanksprite3.png',32,40,16);    
     //this.dale.loadPlayer(this);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
@@ -103,20 +91,32 @@ GameState.prototype.create = function () {
     this.NUMBER_OF_BULLETS = 20;
 
     //Create Player
-    this.player.enablePlayer(this);
+    this.player.enablePlayer(this.game);
+    try{
+        socket.emit("new player", {x: game.width/2 , y: game.height-100});
+        console.log("Player sent");
+    }catch(err){
+        console.log("PLayer could not be sent");
+        console.log(err.message);
+    }
+
+/*
     try{
        socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
+       // socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
        // Start listening for events
        this.setEventHandlers();
     }catch(err){
-       console.log("Server could not be reached");
-       console.log(err);
+       try{
+            socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
+            this.setEventHandlers();
+            console.log("connected locally");
+       }catch(err){
+           console.log("Server could not be reached");
+           console.log(err);
+       }
     }
-
-    var i;
-    for(i=0; i < this.remotePlayers.length; i++){
-        this.remotePlayers[i].enablePlayer(this);
-    }
+*/
     //this.dale.enablePlayer(this);
     
 
@@ -178,7 +178,7 @@ GameState.prototype.create = function () {
     );
 };
 
-GameState.prototype.shootBullet = function() {
+GameState.prototype.shootBullet = function(player) {
     // Enforce a short delay between shots by recording
     // the time that each bullet is shot and testing if
     // the amount of time since the last shot is more than
@@ -206,10 +206,10 @@ GameState.prototype.shootBullet = function() {
     bullet.outOfBoundsKill = true;
     
     //puts the bullet at the players position
-    bullet.reset(this.player.sprite.x, this.player.sprite.y);
+    bullet.reset(player.sprite.x, player.sprite.y);
 
     // Set the bullet position to the gun position.
-    bullet.rotation = this.player.sprite.rotation;
+    bullet.rotation = player.sprite.rotation;
 
     // Shoot it in the right direction
     bullet.body.velocity.x = Math.cos(bullet.rotation) * this.BULLET_SPEED;
@@ -265,8 +265,11 @@ GameState.prototype.update = function() {
     //Update Player
     this.player.movePlayer(this);
     this.player.jumpPlayer(this);
-    
-
+    var i; 
+    for(i = 0; i < remotePlayers.length; i++){
+        remotePlayers[i].movePlayer(this);
+        remotePlayers[i].jumpPlayer(this);
+    }
     
     //Update Health
    this.healthDisplay.setText(this.player.sprite.health);
@@ -287,12 +290,22 @@ GameState.prototype.update = function() {
 
     //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
-        this.shootBullet();
+        this.shootBullet(this.player);
+        socket.emit('throw');
+    }
+    if(remoteThrow){
+        this.shootBullet(remotePlayers[0]);
+        remoteThrow = false;
     }
     
     //Punch
     if(this.input.keyboard.justPressed(Phaser.Keyboard.S)){
      this.player.basicAttackPlayer();   
+     socket.emit('attack');
+    }
+    if(remoteAttack){
+        remotePlayers[0].basicAttackPlayer();
+        remoteAttack = false;
     }
 };
 
@@ -305,7 +318,7 @@ GameState.prototype.leftInputIsActive = function() {
     isActive = this.input.keyboard.isDown(Phaser.Keyboard.LEFT);
     isActive |= (this.game.input.activePointer.isDown &&
         this.game.input.activePointer.x < this.game.width/4);
-
+    
     return isActive;
 };
 
@@ -336,6 +349,7 @@ GameState.prototype.upInputIsActive = function(duration) {
 
     return isActive;
 };
+/*
 GameState.prototype.setEventHandlers = function() {
     socket.on("connect", this.onSocketConnected);
     socket.on("new player", this.onNewPlayer);
@@ -360,11 +374,16 @@ GameState.prototype.onSocketDisconnect = function() {
 
 GameState.prototype.onNewPlayer = function(data) {
     console.log("New player connected: "+data.id);
-
-    var newPlayer = new Player(2, 'HANK', data.id);
-    newPlayer.id = data.id;
-    this.remotePlayers.push(newPlayer);
-
+    var newPlayer = new Player(2, 'HANK2', data.id);
+//    newPlayer.id = data.id;
+//    this.remotePlayers.push(newPlayer);
+//    newPlayer.loadPlayer(this);
+    try{
+        newPlayer.enablePlayer(game);
+    }catch(err){
+        console.log("New Player failed to be created");
+        console.log(err);
+    }
 };
 
 GameState.prototype.onMovePlayer = function(data) {
@@ -374,4 +393,4 @@ GameState.prototype.onMovePlayer = function(data) {
 GameState.prototype.onRemovePlayer = function(data) {
 
 };
-
+*/

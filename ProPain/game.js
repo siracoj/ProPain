@@ -60,7 +60,13 @@ var setEventHandlers = function() {
 function onSocketConnection(client) {
     util.log("New Player connected: "+client.id);
     client.on("new player", onNewPlayer);
-    client.on("move player", onMovePlayer);
+    client.on("moveLeft", onMoveLeft);
+    client.on("moveRight", onMoveRight);
+    client.on("moveStop", onMoveStop);
+    client.on("jump", onJump);
+    client.on("jumpStop", onJumpStop);
+    client.on("attack", onAttack);
+    client.on("throw", onProjectile);
     client.on("disconnect", onClientDisconnect);
 };
 
@@ -86,13 +92,38 @@ function onNewPlayer(data){
     var i, existingPlayer;
     for (i = 0; i < players.length; i++) {
         existingPlayer = players[i];
+        try{
         this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});  //emits player data to this client
+        }catch(err){
+           util.log("Failed to send existing player");
+           util.log(err);
+        }
+        util.log("Existing player sent with ID: "+existingPlayer.id);
     }
     players.push(newPlayer);
 };
 
-function onMovePlayer(data){
-    
+function onMoveRight(){
+    this.broadcast.emit("moveRight");
+};
+function onJump(){
+    this.broadcast.emit("jump");
+};
+function onJumpStop(){
+    this.broadcast.emit("jumpStop");
+};
+function onAttack(){
+    this.broadcast.emit("attack");
+};
+function onProjectile(){
+    this.broadcast.emit("throw");
+};
+
+function onMoveLeft(){
+    this.broadcast.emit("moveLeft");
+};
+function onMoveStop(){
+    this.broadcast.emit("moveStop");
 };
 
 init();
