@@ -11,47 +11,6 @@ var GameState = function (game) {
     // Start listening for events
     //this.setEventHandlers();
 };
-/*
-///////////////////////////////////////EVENTS//////////////////////////////////
-GameState.prototype.setEventHandlers = function() {
-    socket.on("connect", this.onSocketConnected);
-    socket.on("new player", this.onNewPlayer);
-    socket.on("move player", this.onMovePlayer);
-    socket.on("remove player", this.onRemovePlayer);
-    socket.on("disconnect", this.onSocketDisconnect);
-};
-GameState.prototype.onSocketConnected = function() {
-    console.log("Connected to socket server");
-    try{
-        socket.emit("new player", {x: this.game.width/2 , y: this.game.height-100}); 
-        console.log("Player sent");
-    }catch(err){
-        console.log("PLayer could not be sent");
-        console.log(err.message);
-    }
-};
-
-GameState.prototype.onSocketDisconnect = function() {
-    console.log("Disconnected from socket server");
-};
-
-GameState.prototype.onNewPlayer = function(data) {
-    console.log("New player connected: "+data.id);
-    
-    var newPlayer = new Player(2, 'HANK');
-    newPlayer.id = data.id;
-    this.remotePlayers.push(newPlayer);
-    
-};
-
-GameState.prototype.onMovePlayer = function(data) {
-
-};
-
-GameState.prototype.onRemovePlayer = function(data) {
-
-};
-*/
 
 /////////////////////////////GAMESTATE FUNCTIONS////////////////////////////
 
@@ -60,7 +19,6 @@ GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
     
     this.game.load.spritesheet('hank', '/assets/gfx/hanksprite3.png',32,40,16);    
-    this.game.load.spritesheet('hank2', '/assets/gfx/hanksprite3.png',32,40,16);    
     //this.dale.loadPlayer(this);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
@@ -100,28 +58,6 @@ GameState.prototype.create = function () {
         console.log(err.message);
     }
 
-/*
-    try{
-       socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
-       // socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
-       // Start listening for events
-       this.setEventHandlers();
-    }catch(err){
-       try{
-            socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
-            this.setEventHandlers();
-            console.log("connected locally");
-       }catch(err){
-           console.log("Server could not be reached");
-           console.log(err);
-       }
-    }
-*/
-    //this.dale.enablePlayer(this);
-    
-
-    //var t = game.add.text(game.world.centerX-300, 0, text, style);
-    
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
 
@@ -349,48 +285,3 @@ GameState.prototype.upInputIsActive = function(duration) {
 
     return isActive;
 };
-/*
-GameState.prototype.setEventHandlers = function() {
-    socket.on("connect", this.onSocketConnected);
-    socket.on("new player", this.onNewPlayer);
-    socket.on("move player", this.onMovePlayer);
-    socket.on("remove player", this.onRemovePlayer);
-    socket.on("disconnect", this.onSocketDisconnect);
-};
-GameState.prototype.onSocketConnected = function() {
-    console.log("Connected to socket server");
-    try{
-        socket.emit("new player", {x: globalGame.width/2 , y: globalGame.height-100});
-        console.log("Player sent");
-    }catch(err){
-        console.log("PLayer could not be sent");
-        console.log(err.message);
-    }
-};
-
-GameState.prototype.onSocketDisconnect = function() {
-    console.log("Disconnected from socket server");
-};
-
-GameState.prototype.onNewPlayer = function(data) {
-    console.log("New player connected: "+data.id);
-    var newPlayer = new Player(2, 'HANK2', data.id);
-//    newPlayer.id = data.id;
-//    this.remotePlayers.push(newPlayer);
-//    newPlayer.loadPlayer(this);
-    try{
-        newPlayer.enablePlayer(game);
-    }catch(err){
-        console.log("New Player failed to be created");
-        console.log(err);
-    }
-};
-
-GameState.prototype.onMovePlayer = function(data) {
-
-};
-
-GameState.prototype.onRemovePlayer = function(data) {
-
-};
-*/
