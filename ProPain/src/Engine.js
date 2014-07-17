@@ -5,6 +5,7 @@ var text, socket, globalGame;
 
 var GameState = function (game) {
     this.player = new Player(1, 'HANK', 'local', game.width/2 ,game.height-100);
+    //this.powerUp = new PowerUP(1,'BEER', 'local', game.width/2 ,game.height-100);
     this.remotePlayers = [];
     this.game = game;
     globalGame = game;
@@ -23,7 +24,7 @@ GameState.prototype.preload = function () {
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
-    
+    //this.game.powerup.loadPowerUp(this);
 };
 
 
@@ -58,6 +59,9 @@ GameState.prototype.create = function () {
         console.log(err.message);
     }
 
+    //create powerup
+   // this.powerUp.enablePowerUp(this.game);
+    
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
 
@@ -112,6 +116,8 @@ GameState.prototype.create = function () {
     this.fpsText = this.game.add.text(
         20, 20, '', { font: '16px Arial', fill: '#ffffff' }
     );
+    
+
 };
 
 GameState.prototype.shootBullet = function(player) {
