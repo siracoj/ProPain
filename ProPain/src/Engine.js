@@ -59,7 +59,7 @@ GameState.prototype.onRemovePlayer = function(data) {
 // Load images and sounds
 GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
-    
+    this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('hank', '/assets/gfx/hanksprite3.png',32,40,16);    
     this.game.load.spritesheet('hank2', '/assets/gfx/hanksprite3.png',32,40,16);    
     //this.dale.loadPlayer(this);
@@ -133,8 +133,9 @@ GameState.prototype.create = function () {
     
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
-
     
+    
+//--------Create the Ground----------   
     // Create some ground for the player to walk on
     this.ground = this.game.add.group();
     for (var x = 0; x < this.game.width; x += 32) {
@@ -145,11 +146,30 @@ GameState.prototype.create = function () {
         groundBlock.body.allowGravity = false;
         this.ground.add(groundBlock);
     }
+//---------End of Ground---------------
     
-    //Create text
+    
+//----------create platforms---------
+  this.platform = this.game.add.group();
+    //PLatforms for first car
+    this.createPlatforms(0,130,310);
+    //second car
+    this.createPlatforms(310,420,310);
+    //Third car
+    this.createPlatforms(520,590,310);
+    //Random Platform
+   this.createPlatforms(530,590,500);
+    //Fourth car
+    this.createPlatforms(740,800,310);
+//---------End of Platforms-------------
+    
+    
+//----------Create text------------
     this.healthDisplay = this.game.add.text(
         this.game.world.centerX, this.game.world.centerY+280, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
     );
+//----------End of Text-----------
+    
     // Create an object pool of bullets
     this.bulletPool = this.game.add.group();
     for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
@@ -189,6 +209,20 @@ GameState.prototype.create = function () {
 
 };
 
+//Create Platforms anywhere on the map and add if to the platform
+//grounp.  Note Group must already be created
+GameState.prototype.createPlatforms=function(start,stop,y){
+    for (var x = start; x < stop; x += 32) {
+        // Add the ground blocks, enable physics on each, make them immovable
+        var platformBlock = this.game.add.sprite(x, this.game.height - y, 'platform');
+        this.game.physics.enable(platformBlock, Phaser.Physics.ARCADE);
+        platformBlock.body.immovable = true;
+        platformBlock.body.allowGravity = false;
+        this.platform.add(platformBlock);
+    }   
+};
+
+
 GameState.prototype.shootBullet = function(player) {
     // Enforce a short delay between shots by recording
     // the time that each bullet is shot and testing if
@@ -226,6 +260,8 @@ GameState.prototype.shootBullet = function(player) {
     bullet.body.velocity.x = Math.cos(bullet.rotation) * this.BULLET_SPEED;
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
+
+
 
 GameState.prototype.getExplosion = function(x, y) {
     // Get the first dead explosion from the explosionGroup
