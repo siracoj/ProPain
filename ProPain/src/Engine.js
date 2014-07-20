@@ -102,9 +102,12 @@ GameState.prototype.create = function () {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     //create powerup
    // this.powerUp.enablePowerUp(this.game);
 =======
+=======
+>>>>>>> parent of f24282f... cleaned up some stuff
 /*
     try{
        socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
@@ -126,6 +129,9 @@ GameState.prototype.create = function () {
     
 
     //var t = game.add.text(game.world.centerX-300, 0, text, style);
+<<<<<<< HEAD
+>>>>>>> parent of f24282f... cleaned up some stuff
+=======
 >>>>>>> parent of f24282f... cleaned up some stuff
     
     // Since we're jumping we need gravity
