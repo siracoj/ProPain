@@ -46,6 +46,7 @@
                     }
                 };
                 var setEventHandlers = function() {
+                    try{
                         socket.on("connect", this.onSocketConnected);
                         socket.on("new player", this.onNewPlayer);
                         socket.on("moveLeft", this.onMoveLeft);
@@ -57,6 +58,9 @@
                         socket.on("throw", this.onProjectile);
                         socket.on("remove player", this.onRemovePlayer);
                         socket.on("disconnect", this.onSocketDisconnect);
+                    }catch(err){
+                        console.log("Offline mode");
+                    }
                     };
                 function onSocketConnected() {
                         console.log("Connected to socket server");

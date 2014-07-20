@@ -101,13 +101,13 @@ GameState.prototype.create = function () {
         console.log(err.message);
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+//<<<<<<< HEAD
+//<<<<<<< HEAD
     //create powerup
    // this.powerUp.enablePowerUp(this.game);
-=======
-=======
->>>>>>> parent of f24282f... cleaned up some stuff
+//=======
+//=======
+//>>>>>>> parent of f24282f... cleaned up some stuff
 /*
     try{
        socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
@@ -129,10 +129,7 @@ GameState.prototype.create = function () {
     
 
     //var t = game.add.text(game.world.centerX-300, 0, text, style);
-<<<<<<< HEAD
->>>>>>> parent of f24282f... cleaned up some stuff
-=======
->>>>>>> parent of f24282f... cleaned up some stuff
+
     
     // Since we're jumping we need gravity
     this.game.physics.arcade.gravity.y = this.GRAVITY;
@@ -305,7 +302,11 @@ GameState.prototype.update = function() {
     //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
         this.shootBullet(this.player);
+        try{
         socket.emit('throw');
+        }catch(err){
+            console.log("Shoot failed");
+        }
     }
     if(remoteThrow){
         this.shootBullet(remotePlayers[0]);
@@ -314,8 +315,13 @@ GameState.prototype.update = function() {
     
     //Punch
     if(this.input.keyboard.justPressed(Phaser.Keyboard.S)){
-     this.player.basicAttackPlayer();   
+     this.player.basicAttackPlayer(); 
+     try{
      socket.emit('attack');
+         
+        }catch(err){
+            console.log("Punch failed");
+        }
     }
     if(remoteAttack){
         remotePlayers[0].basicAttackPlayer();

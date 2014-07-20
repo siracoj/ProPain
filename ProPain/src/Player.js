@@ -90,19 +90,39 @@ Player.prototype.movePlayer = function(GameState){
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
         this.sprite.animations.play('walkLeft');
-        if(this.playerNumber == 1){socket.emit('moveLeft');} 
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('moveLeft');
+            
+        }catch(err){
+            console.log("Move failed");
+        }
+        } 
         
     } else if ((GameState.rightInputIsActive() && this.playerNumber == 1) || (remoteRight && this.playerNumber != 1)) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
         this.sprite.animations.play('walkRight');
-        if(this.playerNumber == 1){socket.emit('moveRight');} 
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('moveRight');
+            
+        }catch(err){
+            console.log("move failed");
+        }} 
        
 
     } else {
         this.sprite.body.acceleration.x = 0;
         this.sprite.animations.stop();
-        if(this.playerNumber == 1){socket.emit('moveStop');} 
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('moveStop');
+            
+        }catch(err){
+            console.log("Stop failed");
+        }
+        } 
        
     }
     //insert animation call her
@@ -132,13 +152,27 @@ Player.prototype.jumpPlayer = function(GameState){
             // Disable ability to double jump if the player is jumping in the air
             if (!onTheGround) this.canDoubleJump = false;
         }
-        if(this.playerNumber == 1){socket.emit('jump');}
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('jump');
+            
+        }catch(err){
+            console.log("jump failed");
+        }
+        }
     }
 
 
     // Don't allow variable jump height after the jump button is released
     if ((!GameState.upInputIsActive() && this.playerNumber == 1) || (!remoteJump && this.playerNumber != 1)) {
         this.canVariableJump = false;
-        if(this.playerNumber == 1){socket.emit('jumpStop');}
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('jumpStop');
+            
+        }catch(err){
+            console.log("Stop failed");
+        }
+        }
     }
 }
