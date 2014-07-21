@@ -5,7 +5,8 @@ var text, socket, globalGame;
 
 var GameState = function (game) {
     this.player = new Player(1, 'HANK', 'local', game.width/2 ,game.height-100);
-    //this.powerUp = new PowerUP(1,'BEER', 'local', game.width/2 ,game.height-100);
+    //ERROR HERE
+    this.powerUp = new PowerUp(1,'BEER', 'local', game.width/2 ,game.height-100);
     this.remotePlayers = [];
     this.game = game;
     globalGame = game;
@@ -91,6 +92,7 @@ GameState.prototype.create = function () {
     this.BULLET_SPEED = 800; // pixels/second
     this.NUMBER_OF_BULLETS = 20;
 
+    //this.powerUp.enablePowerUp(this.game);
     //Create Player
     this.player.enablePlayer(this.game);
     try{
@@ -169,6 +171,11 @@ GameState.prototype.create = function () {
         this.game.world.centerX, this.game.world.centerY+280, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
     );
 //----------End of Text-----------
+    
+    
+//----------Create PowerUp----------
+   // this.powerUp.enablePowerUp(this.game);
+//----------End PowerUp-------------
     
     // Create an object pool of bullets
     this.bulletPool = this.game.add.group();
@@ -329,6 +336,8 @@ GameState.prototype.update = function() {
         // Kill the bullet
         bullet.kill();
     }, null, this);
+    
+    
 
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {

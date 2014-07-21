@@ -132,8 +132,9 @@ Player.prototype.movePlayer = function(GameState){
 
 Player.prototype.basicAttackPlayer = function(GameState){
     this.sprite.animations.play('punch');
-    this.sprite.animations.play('stand');
     this.sprite.animations.stop();
+    this.sprite.animations.play('stand');
+    
 }
     
 Player.prototype.jumpPlayer = function(GameState){
