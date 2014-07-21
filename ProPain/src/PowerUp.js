@@ -64,7 +64,7 @@ PowerUp.prototype.enablePowerUp = function(GameState){
     //for (var x = 0; x < this.game.width; x += 32) {
         // Add the ground blocks, enable physics on each, make them immovable
         var powerUp = GameState.add.sprite(450, this.game.height - 100, 'powerup');
-        this.game.physics.enable(powerUp, Phaser.Physics.ARCADE);
+        GameState.physics.enable(powerUp, Phaser.Physics.ARCADE);
         
         powerUp.body.allowGravity = false;
         GameState.game.powerUp.add(powerUp);
