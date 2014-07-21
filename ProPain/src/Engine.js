@@ -6,7 +6,7 @@ var text, socket, globalGame;
 var GameState = function (game) {
     this.player = new Player(1, 'HANK', 'local', game.width/2 ,game.height-100);
     //ERROR HERE
-    this.powerUp = new PowerUp(1,'BEER', 'local', game.width/2 ,game.height-100);
+    this.powerUp = new PowerUp(1,'BEER', 'local', game.width-500 ,game.height-100);
     this.remotePlayers = [];
     this.game = game;
     globalGame = game;
@@ -68,6 +68,7 @@ GameState.prototype.preload = function () {
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
     //this.game.powerup.loadPowerUp(this);
+    this.game.load.image('powerup','assets/gfx/beer-sprite.png');
 };
 
 
