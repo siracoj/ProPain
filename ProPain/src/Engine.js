@@ -175,7 +175,8 @@ GameState.prototype.create = function () {
     
     
 //----------Create PowerUp----------
-    //this.powerUp.enablePowerUp(this.game);
+    
+    this.powerUp.enablePowerUp(this.game);
 //----------End PowerUp-------------
     
     // Create an object pool of bullets

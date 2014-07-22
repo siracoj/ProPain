@@ -60,14 +60,14 @@ PowerUp.prototype.enablePowerUp = function(GameState){
     //beer = this.game.add.group();
     //beer.enableBody = true;
     //var beer = beer.create(this.game.width/ 2, this.game.height-50,'powerup');
-    GameState.game.powerUp = GameState.game.add.group();
     //for (var x = 0; x < this.game.width; x += 32) {
         // Add the ground blocks, enable physics on each, make them immovable
-        var powerUp = GameState.add.sprite(450, GameState.game.height - 100, 'powerup');
-        GameState.game.physics.enable(powerUp, Phaser.Physics.ARCADE);
+   GameState.game.powerUps = GameState.game.add.group();
+        var powerUping = GameState.add.sprite(450, GameState.game.height - 100, 'powerup');
+        GameState.game.physics.enable(powerUping, Phaser.Physics.ARCADE);
         
         powerUp.body.allowGravity = false;
-        GameState.game.powerUp.add(powerUp);
+        GameState.game.powerUps.add(powerUping);
     //}
         
 }
