@@ -23,7 +23,7 @@ var socket,
         //By default, we forward the / path to index.html automatically.
     app.get( '/', function( req, res ){
         console.log('trying to load %s', __dirname + '/GamePage.html');
-        res.sendfile( '/GamePage.html' , { root:__dirname });
+        res.sendfile( '/FrontPage.html' , { root:__dirname });
     });
 
 
