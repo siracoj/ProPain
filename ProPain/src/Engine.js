@@ -20,8 +20,7 @@ var GameState = function (game) {
 GameState.prototype.preload = function () {
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('platform','assets/gfx/platform.png');
-    this.game.load.spritesheet('hank', '/assets/gfx/hanksprite3.png',32,40,16);    
-    this.game.load.spritesheet('hank2', '/assets/gfx/hanksprite3.png',32,40,16);    
+    this.game.load.spritesheet('hank', '/assets/gfx/hanksprite4.png',32,40,17);        
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
@@ -119,6 +118,23 @@ GameState.prototype.create = function () {
         // Set its initial state to "dead".
         bullet.kill();
     }
+      
+    // Create an object pool of bullets for the opponent 
+    this.remoteBulletPool = this.game.add.group();
+    for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
+        // Create each bullet and add it to the group.
+        var bullet = this.game.add.sprite(0, 0, 'bullet');
+        this.remoteBulletPool.add(bullet);
+
+        // Set its pivot point to the center of the bullet
+        bullet.anchor.setTo(0.5, 0.5);
+
+        // Enable physics on the bullet
+        this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
+
+        // Set its initial state to "dead".
+        bullet.kill();
+    }
     //----------Create PowerUp----------
     
     this.powerUp.enablePowerUp(this);
@@ -167,9 +183,14 @@ GameState.prototype.shootBullet = function(player) {
     if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0;
     if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return;
     this.lastBulletShotAt = this.game.time.now;
-
+    var bullet;
     // Get a dead bullet from the pool
-    var bullet = this.bulletPool.getFirstDead();
+    if(player.playerNumber == 1){
+        bullet = this.bulletPool.getFirstDead();
+    }else{
+        bullet = this.remoteBulletPool.getFirstDead();
+    }
+    
     this.game.physics.enable(bullet, Phaser.Physics.ARCADE);
 
     // If there aren't any bullets available then don't shoot
@@ -178,7 +199,9 @@ GameState.prototype.shootBullet = function(player) {
     // Revive the bullet
     // This makes the bullet "alive"
     bullet.revive();
-
+    
+    
+    
     // Bullets should kill themselves when they leave the world.
     // Phaser takes care of this for me by setting this flag
     // but you can do it yourself by killing the bullet if
@@ -193,11 +216,11 @@ GameState.prototype.shootBullet = function(player) {
     bullet.rotation = player.sprite.rotation;
 
     // Shoot it in the right direction
-    //if(player.sprite.body.velocity.x >= 0){
+    if(player.facingRight){
         bullet.body.velocity.x = Math.cos(bullet.rotation) * this.BULLET_SPEED;
-    //}else{
-      //  bullet.body.velocity.x = -Math.cos(bullet.rotation) * this.BULLET_SPEED;
-    //}
+    }else{
+        bullet.body.velocity.x = -Math.cos(bullet.rotation) * this.BULLET_SPEED;
+    }
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
 
@@ -270,6 +293,13 @@ GameState.prototype.update = function() {
         bullet.kill();
     }, null, this);
     
+    this.game.physics.arcade.collide(this.remoteBulletPool, this.ground, function(bullet, ground) {
+        // Create an explosion
+        this.getExplosion(bullet.x, bullet.y);
+
+        // Kill the bullet
+        bullet.kill();
+    }, null, this);
     
     this.game.physics.arcade.collide(this.bulletPool, this.platform, function(bullet, ground) {
         // Create an explosion
@@ -279,8 +309,17 @@ GameState.prototype.update = function() {
         bullet.kill();
     }, null, this);
     
+    this.game.physics.arcade.collide(this.remoteBulletPool, this.platform, function(bullet, ground) {
+        // Create an explosion
+        this.getExplosion(bullet.x, bullet.y);
+
+        // Kill the bullet
+        bullet.kill();
+    }, null, this);
+    
     //player hit by bullet
-    this.game.physics.arcade.collide(this.player.sprite, this.bulletPool, function(player, bullet) {
+    this.game.physics.arcade.collide(this.player.sprite, this.remoteBulletPool, function(player, bullet) {
+        this.getExplosion(bullet.x, bullet.y);
         player.health -= 30;
         if(player.health <= 0){
             try{
@@ -312,10 +351,15 @@ GameState.prototype.update = function() {
             // Kill the powerup
             powerup.kill();
         }, null, this);
-        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.bulletPool);
+        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.bulletPool, function(player, bullet){
+            this.getExplosion(bullet.x, bullet.y);
+        }, null, this);
     }
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {
+        bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
+    }, this);
+    this.remoteBulletPool.forEachAlive(function(bullet) {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
     }, this);
 
