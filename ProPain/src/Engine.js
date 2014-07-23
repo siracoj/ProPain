@@ -353,15 +353,16 @@ GameState.prototype.update = function() {
         console.log("power up get");
         player.health -= 30;
         if(player.health <= 0){
+            try{
+                socket.emit("dead");
+            }catch(err){
+            }
+
             player.kill();
             if (confirm("You lost, try again?") == true) {
                 window.location.href = 'GamePage.html';
             } else {
                 window.location.href = 'FrontPage.html';
-            }
-            try{
-                socket.emit("dead");
-            }catch(err){
             }
         }
         // Kill the powerup
@@ -375,12 +376,14 @@ GameState.prototype.update = function() {
         powerup.kill();
     }, null, this);
     
-    this.game.physics.arcade.collide(remotePlayers[0].sprite, this.powerUps, function(player, powerup) {
-        console.log("power up get");
-        // Kill the powerup
-        powerup.kill();
-    }, null, this);
-
+    for(i = 0; i < remotePlayers.length; i++){
+        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.powerUps, function(player, powerup) {
+            console.log("power up get");
+            // Kill the powerup
+            powerup.kill();
+        }, null, this);
+        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.bulletPool);
+    }
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);

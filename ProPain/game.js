@@ -79,7 +79,7 @@ function onRemoteDead(){
 }
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
-    onRemoteDead();
+    this.broadcast.emit("dead");
 }
 
 function onNewPlayer(data){
