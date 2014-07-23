@@ -44,30 +44,13 @@ PowerUp.prototype.loadPowerUp = function(GameState){
 }
     
 PowerUp.prototype.enablePowerUp = function(GameState){
-    //Load Player sprite and animations
-    	this.sprite = GameState.add.sprite(this.x, this.y, 'powerup');
-        
-
-
-    // Enable physics on the player
-    
-    GameState.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-
-    // Make player collide with world boundaries so he doesn't leave the stage
-    this.sprite.body.collideWorldBounds = true;
-    
-    //Possible way for collition detection
-    //beer = this.game.add.group();
-    //beer.enableBody = true;
-    //var beer = beer.create(this.game.width/ 2, this.game.height-50,'powerup');
-    //for (var x = 0; x < this.game.width; x += 32) {
-        // Add the ground blocks, enable physics on each, make them immovable
-   GameState.game.powerUps = GameState.game.add.group();
+    //Load Power up group
+   GameState.powerUps = GameState.game.add.group();
         var powerUping = GameState.add.sprite(450, GameState.game.height - 100, 'powerup');
         GameState.game.physics.enable(powerUping, Phaser.Physics.ARCADE);
         
-        powerUp.body.allowGravity = false;
-        GameState.game.powerUps.add(powerUping);
+        powerUping.body.allowGravity = false;
+        GameState.powerUps.add(powerUping);
     //}
         
 }

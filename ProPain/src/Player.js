@@ -85,7 +85,12 @@ Player.prototype.movePlayer = function(GameState){
         
     // Collide the player with the ground
     GameState.game.physics.arcade.collide(this.sprite, GameState.ground);
+    
+    //Collide player with platform
+    GameState.game.physics.arcade.collide(this.sprite, GameState.platform);
 
+   
+    
     if ((GameState.leftInputIsActive() && this.playerNumber == 1) || (remoteLeft && this.playerNumber != 1)) {
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
@@ -95,7 +100,7 @@ Player.prototype.movePlayer = function(GameState){
                 socket.emit('moveLeft');
             
         }catch(err){
-            console.log("Move failed");
+            //console.log("Move failed");
         }
         } 
         
@@ -108,7 +113,7 @@ Player.prototype.movePlayer = function(GameState){
                 socket.emit('moveRight');
             
         }catch(err){
-            console.log("move failed");
+            //console.log("move failed");
         }} 
        
 
@@ -120,7 +125,7 @@ Player.prototype.movePlayer = function(GameState){
                 socket.emit('moveStop');
             
         }catch(err){
-            console.log("Stop failed");
+            //console.log("Stop failed");
         }
         } 
        
@@ -158,7 +163,7 @@ Player.prototype.jumpPlayer = function(GameState){
                 socket.emit('jump');
             
         }catch(err){
-            console.log("jump failed");
+           // console.log("jump failed");
         }
         }
     }
@@ -172,7 +177,7 @@ Player.prototype.jumpPlayer = function(GameState){
                 socket.emit('jumpStop');
             
         }catch(err){
-            console.log("Stop failed");
+           // console.log("Stop failed");
         }
         }
     }

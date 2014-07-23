@@ -155,15 +155,15 @@ GameState.prototype.create = function () {
 //----------create platforms---------
   this.platform = this.game.add.group();
     //PLatforms for first car
-    this.createPlatforms(0,130,310);
+    this.createPlatforms(0,130,100);
     //second car
     this.createPlatforms(310,420,310);
     //Third car
     this.createPlatforms(520,590,310);
     //Random Platform
-   this.createPlatforms(530,590,500);
+   //this.createPlatforms(530,590,500);
     //Fourth car
-    this.createPlatforms(740,800,310);
+    this.createPlatforms(740,800,100);
 //---------End of Platforms-------------
     
     
@@ -174,10 +174,7 @@ GameState.prototype.create = function () {
 //----------End of Text-----------
     
     
-//----------Create PowerUp----------
-    
-    this.powerUp.enablePowerUp(this.game);
-//----------End PowerUp-------------
+
     
     // Create an object pool of bullets
     this.bulletPool = this.game.add.group();
@@ -195,7 +192,10 @@ GameState.prototype.create = function () {
         // Set its initial state to "dead".
         bullet.kill();
     }
+    //----------Create PowerUp----------
     
+    this.powerUp.enablePowerUp(this);
+//----------End PowerUp-------------
     // Create a group for explosions
     this.explosionGroup = this.game.add.group();
 
@@ -340,6 +340,20 @@ GameState.prototype.update = function() {
     }, null, this);
     
     
+    this.game.physics.arcade.collide(this.bulletPool, this.platform, function(bullet, ground) {
+        // Create an explosion
+        this.getExplosion(bullet.x, bullet.y);
+
+        // Kill the bullet
+        bullet.kill();
+    }, null, this);
+    
+     this.game.physics.arcade.collide(this.player.sprite, this.powerUps, function(player, powerup) {
+        console.log("power up get");
+        player.health += 30;
+        // Kill the powerup
+        powerup.kill();
+    }, null, this);
 
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {
