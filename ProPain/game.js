@@ -68,10 +68,18 @@ function onSocketConnection(client) {
     client.on("attack", onAttack);
     client.on("throw", onProjectile);
     client.on("disconnect", onClientDisconnect);
+    client.on("dead", onRemoteDead);
 };
 
+function onRemoteDead(){
+    try{
+        this.broadcast.emit("dead");
+    }catch(err){
+    }
+}
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
+    onRemoteDead();
 }
 
 function onNewPlayer(data){

@@ -57,7 +57,7 @@
                         socket.on("jumpStop", this.onJumpStop);
                         socket.on("attack", this.onAttack);
                         socket.on("throw", this.onProjectile);
-                        socket.on("remove player", this.onRemovePlayer);
+                        socket.on("dead", this.onRemoteDead);
                         socket.on("disconnect", this.onSocketDisconnect);
                     }catch(err){
                         console.log("Offline mode");
@@ -121,7 +121,12 @@
                    console.log('stop jump');
                    remoteJump = false;
                 };
-                function onRemovePlayer(data) {
+                function onRemoteDead(data) {
+                    if (confirm("You won, try again?") == true) {
+                        window.location.href = 'GamePage.html';
+                    } else {
+                        window.location.href = 'FrontPage.html';
+                    }
                 };
 
             </script>

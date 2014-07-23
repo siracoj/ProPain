@@ -348,9 +348,35 @@ GameState.prototype.update = function() {
         bullet.kill();
     }, null, this);
     
+    //player hit by bullet
+    this.game.physics.arcade.collide(this.player.sprite, this.bulletPool, function(player, bullet) {
+        console.log("power up get");
+        player.health -= 30;
+        if(player.health <= 0){
+            player.kill();
+            if (confirm("You lost, try again?") == true) {
+                window.location.href = 'GamePage.html';
+            } else {
+                window.location.href = 'FrontPage.html';
+            }
+            try{
+                socket.emit("dead");
+            }catch(err){
+            }
+        }
+        // Kill the powerup
+        bullet.kill();
+    }, null, this);
+    
      this.game.physics.arcade.collide(this.player.sprite, this.powerUps, function(player, powerup) {
         console.log("power up get");
         player.health += 30;
+        // Kill the powerup
+        powerup.kill();
+    }, null, this);
+    
+    this.game.physics.arcade.collide(remotePlayers[0].sprite, this.powerUps, function(player, powerup) {
+        console.log("power up get");
         // Kill the powerup
         powerup.kill();
     }, null, this);
