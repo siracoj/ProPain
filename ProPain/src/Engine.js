@@ -1,4 +1,4 @@
-var text, socket, globalGame;
+var text, socket, globalGame, music;
 
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
@@ -25,6 +25,7 @@ GameState.prototype.preload = function () {
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
+    this.game.load.audio('themeMusic','assets/gfx/audio/KOTH Theme Song.mp3'); 
 };
 
 
@@ -33,11 +34,15 @@ GameState.prototype.create = function () {
     // Set stage background to something sky colored
     this.game.stage.scale.pageAlignHorizontally = true;
     this.game.stage.scale.pageAlignVeritcally = true;
-
+    
     this.game.stage.backgroundColor=0x0066FF;
     //this.game.stage.backgroundImage(0,0,'background');
-    this.add.sprite(0,0,'background');
+    this.add.sprite(-10,0,'background');
     
+    //Audio
+    this.music = this.game.add.audio('themeMusic');
+    this.music.play();
+    this.music.volume = .5;
 
     // Define movement constants
     this.MAX_SPEED = 250; // pixels/second
@@ -406,6 +411,10 @@ GameState.prototype.leftInputIsActive = function() {
     return isActive;
 };
 
+
+GameState.prototype.render= function() {
+    this.game.debug.soundInfo(this.music, 20, 64);
+};
 
 // This function should return true when the player activates the "go right" control
 // In this case, either holding the right arrow or tapping or clicking on the right
