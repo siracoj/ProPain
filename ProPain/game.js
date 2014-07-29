@@ -80,6 +80,12 @@ function onRemoteDead(){
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
     this.broadcast.emit("dead");
+    var i;
+    for(i=0; i<players.length; i++){
+        if(players[i].id == this.id){
+            players.splice(i,1);
+        }
+    }
 }
 
 function onNewPlayer(data){
