@@ -55,11 +55,14 @@ Player.prototype.loadPlayer = function(GameState){
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
     	this.sprite = GameState.add.sprite(this.x, this.y, 'hank');
+    this.facingRight = true;
         
-    this.sprite.animations.add('walkRight',[1,2,3,4],5,true);
-    this.sprite.animations.add('walkLeft',[10,11,12,13],5,true);
-    //this.sprtie.animations.add('stand',[14],2,false);
-    this.sprite.animations.add('punch',[15],2,false);
+    this.sprite.animations.add('walkRight',[1,2,3,4],10,true);
+    this.sprite.animations.add('walkLeft',[10,11,12,13],10,true);
+    this.sprite.animations.add('standRight',[0],2,false);
+    this.sprite.animations.add('standLeft',[14],2,false);
+    this.sprite.animations.add('punchRight',[15,0],2,false);
+    this.sprite.animations.add('punchLeft',[16,14],2,false);
 
     
     
@@ -95,6 +98,7 @@ Player.prototype.movePlayer = function(GameState){
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
         this.sprite.animations.play('walkLeft');
+        this.facingRight = false;
         if(this.playerNumber == 1){
             try{
                 socket.emit('moveLeft');
@@ -107,6 +111,7 @@ Player.prototype.movePlayer = function(GameState){
     } else if ((GameState.rightInputIsActive() && this.playerNumber == 1) || (remoteRight && this.playerNumber != 1)) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
+        this.facingRight=true;
         this.sprite.animations.play('walkRight');
         if(this.playerNumber == 1){
             try{
@@ -119,7 +124,11 @@ Player.prototype.movePlayer = function(GameState){
 
     } else {
         this.sprite.body.acceleration.x = 0;
-        this.sprite.animations.stop();
+        if(this.facingRight){
+            this.sprite.animations.play('standRight');
+        }else{
+            this.sprite.animations.play('standLeft');
+        }
         if(this.playerNumber == 1){
             try{
                 socket.emit('moveStop');
@@ -136,9 +145,11 @@ Player.prototype.movePlayer = function(GameState){
 }
 
 Player.prototype.basicAttackPlayer = function(GameState){
-    this.sprite.animations.play('punch');
-    this.sprite.animations.stop();
-    this.sprite.animations.play('stand');
+    if(this.facingRight){
+            this.sprite.animations.play('punchRight');
+        }else{
+            this.sprite.animations.play('punchLeft');
+        }
     
 }
     
