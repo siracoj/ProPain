@@ -32,6 +32,7 @@
                     console.log(err);
                 }
 
+                var gameid;
                 var remoteLeft = false;
                 var remoteRight = false;
                 var remoteJump = false;
@@ -43,7 +44,7 @@
                 var localAttack = false;
                 var localThrow = false;
                 var localPlayer;
-                var remotePlayer;
+                var remotePlayer = new Player(0, 'TEST', 0,0,0);
                 window.onload = function() {
                         setEventHandlers();
                 };
@@ -60,10 +61,15 @@
                         socket.on("throw", this.onProjectile);
                         socket.on("dead", this.onRemoteDead);
                         socket.on("disconnect", this.onSocketDisconnect);
+                        socket.on("gameid", this.setGame);
                     }catch(err){
                         console.log("Offline mode");
                     }
                     };
+                function setGame(data){
+                   console.log(data.game);
+                    gameid = data.game;
+                }
                 function onSocketConnected() {
                     console.log("Connected to socket server");
 
@@ -82,7 +88,11 @@
                    };
 
                 function onNewPlayer(data){
+                   console.log(data.game);
+                   console.log(gameid);
                        console.log("New player connected: "+data.id);
+                   if(gameid == data.game){
+                     
                        var newPlayer = new Player(2, 'DALE', data.id, data.x, data.y);
                        try{
                            newPlayer.enablePlayer(game);
@@ -91,69 +101,72 @@
                            console.log("New Player failed to be created");
                            console.log(err);
                        }
-                   };
+                   }
+                };
 
                 function onMoveLeft(data) {
                    console.log('left');
                    if(data.id == localPlayer.id){
                        localLeft = true;
-                   }else{ 
+                   }else if(data.id == remotePlayer.id){ 
                        remoteLeft = true;
                    }
                   };
                 function onMoveRight(data) {
-                   console.log('right');
+                   //console.log('right');
                    console.log(data.id);
                    if(data.id == localPlayer.id){
                        localRight = true;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteRight = true;
                    }
                 };
                 function onMoveStop(data) {
-                   console.log('stop');
+                   //console.log('stop');
                    if(data.id == localPlayer.id){
                        localLeft = false;
                        localRight = false;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteRight = false;
                        remoteLeft = false;
                    }
                 };
                 function onJump(data) {
-                   console.log('jump');
+                   //console.log('jump');
                    if(data.id == localPlayer.id){
                        localJump = true;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteJump = true;
                    }
                 };
                 function onAttack(data) {
-                   console.log('Attack');
+                   //console.log('Attack');
                    if(data.id == localPlayer.id){
                        localAttack = true;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteAttack = true;
                    }
                 };
                 function onProjectile(data) {
-                   console.log('throw');
+                   //console.log('throw');
                    if(data.id == localPlayer.id){
                        localThrow = true;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteThrow = true;
                    }
                 };
                 function onJumpStop(data) {
-                   console.log('stop jump');
+                   //console.log('stop jump');
                    if(data.id == localPlayer.id){
                        localJump = false;
-                   }else{
+                   }else if(data.id == remotePlayer.id){
                        remoteJump = false;
                    }
                 };
                 function onRemoteDead(data) {
-                   window.location.href = 'GamePage.html';
+                   if(data.game == gameid){
+                       window.location.href = 'FrontPage.html';
+                   }
                 };
 
             </script>

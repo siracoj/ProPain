@@ -274,13 +274,6 @@ GameState.prototype.update = function() {
         this.fpsText.setText(this.game.time.fps + ' FPS');
     }
 
-    /*Update Player
-    localPlayer.movePlayer(this);
-    localPlayer.jumpPlayer(this);
-    if(remotePlayer != null){
-        remotePlayer.movePlayer(this);
-        remotePlayer.jumpPlayer(this);
-    }*/
     //Update Health
     this.healthDisplay.setText(localPlayer.sprite.health);
     
@@ -323,12 +316,12 @@ GameState.prototype.update = function() {
         player.health -= 30;
         if(player.health <= 0){
             try{
-                socket.emit("dead");
+                socket.emit("dead", gameid);
             }catch(err){
             }
 
             player.kill();
-            window.location.href = 'GamePage.html';
+            window.location.href = 'FrontPage.html';
         }
         // Kill the powerup
         bullet.kill();
@@ -341,7 +334,7 @@ GameState.prototype.update = function() {
         powerup.kill();
     }, null, this);
     
-    if(remotePlayer != null){
+    if(remotePlayer.playerNumber == 2){
         this.game.physics.arcade.collide(remotePlayer.sprite, this.powerUps, function(player, powerup) {
             console.log("power up get");
             // Kill the powerup
@@ -353,7 +346,7 @@ GameState.prototype.update = function() {
     }
     localPlayer.movePlayer(this);
     localPlayer.jumpPlayer(this);
-    if(remotePlayer != null){
+    if(remotePlayer.playerNumber == 2){
         remotePlayer.movePlayer(this);
         remotePlayer.jumpPlayer(this);
     }

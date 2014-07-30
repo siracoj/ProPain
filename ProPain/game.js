@@ -12,6 +12,11 @@ var socket,
     players,
     games;
 
+var GameData = function() {
+    var player1,
+        player2,
+        id;
+};
 
 
    //Tell the server to listen for incoming connections
@@ -47,6 +52,10 @@ var socket,
 function init() {
     players = [];
     games = [];
+    var firstGame = new GameData();
+    firstGame.id = 1;
+    games.push(firstGame);
+  
     //Socket configuration
     
     setEventHandlers();
@@ -70,54 +79,62 @@ function onSocketConnection(client) {
     client.on("throw", onProjectile);
     client.on("disconnect", onClientDisconnect);
     client.on("dead", onRemoteDead);
+    client.emit("gameid", {game: games.length});    
 };
 
-function onRemoteDead(){
+function onRemoteDead(data){
     try{
-        this.broadcast.emit("dead");
+        this.broadcast.emit("dead", {game: data.game});
     }catch(err){
     }
 }
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
-    this.broadcast.emit("dead");
     var i;
     for(i=0; i<players.length; i++){
         if(players[i].id == this.id){
+            games.splice(players[i],1);
+            this.broadcast.emit("dead", {game: players[i].game});
             players.splice(i,1);
         }
     }
 }
 
 function onNewPlayer(data){
+    var index = games.length - 1;
     //create player server data
     util.log("Player data arriving");
     var newPlayer = new PlayerData(data.x, data.y);
     newPlayer.id = this.id;
     //util.log("Player "+newPlayer.id+" is at position: "+newPlayer.getX()+","+newPlayer.getY());
     //send player to other clients
-    try{
-        this.broadcast.emit("new player", {id: newPlayer.id, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
-        util.log("Broadcast of player data successfull");
-    }catch(err){
-        util.log("Could not Broadcast player data: "+ err.message);
-    }
     
-    //get existing players for the new client
-    var i, existingPlayer;
-    for (i = 0; i < players.length; i++) {
-        existingPlayer = players[i];
+    players.push(newPlayer);
+    if(games[index].player1 == null){
+        games[index].player1 = newPlayer;
+    }else if(games[index].player2 == null){
+        games[index].player2 = newPlayer;
         try{
-        this.emit("new player", {id: existingPlayer.id, x: existingPlayer.getX(), y: existingPlayer.getY()});  //emits player data to this client
+            this.emit("new player", {id: games[index].player1.id, game: index+1, x: newPlayer.getX(), y: newPlayer.getY()});  //emits player data to this client
         }catch(err){
            util.log("Failed to send existing player");
            util.log(err);
         }
-        util.log("Existing player sent with ID: "+existingPlayer.id);
-    }
-    players.push(newPlayer);
-};
+        util.log("Existing player sent with ID: "+newPlayer.id);
 
+    }else{
+        games.push(new GameData());
+        index++;
+        games[index].player1 = newPlayer;
+        games[index].id = index+1;
+    }
+    try{
+        this.broadcast.emit("new player", {id: newPlayer.id, game: index+1, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
+        util.log("Broadcast of player data successfull");
+    }catch(err){
+        util.log("Could not Broadcast player data: "+ err.message);
+    }
+};
 function onMoveRight(data){
     try{
         this.broadcast.emit("moveRight",{id: this.id});
