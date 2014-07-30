@@ -14,6 +14,7 @@
         <script type="text/javascript" src = "src/Player.js"></script>
         <script type="text/javascript"  src="lib/phaser.min.js"></script>
         <script type="text/javascript"  src="src/Engine.js"></script>
+        <script type="text/javascript"  src="src/CharSelect.js"></script>
         <script type="text/javascript"  src ="src/PowerUp.js"></script>
        <script  src="/socket.io/socket.io.js"></script>
     </head>
@@ -23,15 +24,16 @@
         <div id="propain">
 
             <script type="text/javascript">
+                ///////////////////ATTEMPT TO CONNECT///////////////////
                 var socket;
                 try{
-                    //socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
-                    socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
+                    socket = io.connect("http://74.61.206.165", {port: 80, transports: ["websocket"]});
+                    //socket = io.connect("http://raineystreet", {port: 80, transports: ["websocket"]});
                 }catch(err){
                     console.log("Server could not be reached");
                     console.log(err);
                 }
-
+                
                 var gameid;
                 var remoteLeft = false;
                 var remoteRight = false;
@@ -73,13 +75,11 @@
                 function onSocketConnected() {
                     console.log("Connected to socket server");
 
-                    game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain', { preload: preload, create: create });
-                    localPlayer = new Player(1, 'HANK',socket.io.engine.id , game.width/2 ,game.height-100);
-                    function preload () {
-                    }
-                    function create () {
-                        game.state.add('game', GameState, true);
-                    }
+                    game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain');
+                    localPlayer = new Player(1,'TEST' ,socket.io.engine.id , game.width/2 ,game.height-100);
+                    game.state.add('CharState', CharState);
+                    game.state.add('GameState', GameState);
+                    game.state.start('CharState');
 
                 };
 
@@ -93,7 +93,7 @@
                        console.log("New player connected: "+data.id);
                    if(gameid == data.game){
                      
-                       var newPlayer = new Player(2, 'DALE', data.id, data.x, data.y);
+                       var newPlayer = new Player(2, data.character, data.id, data.x, data.y);
                        try{
                            newPlayer.enablePlayer(game);
                            remotePlayer = newPlayer;
@@ -165,7 +165,7 @@
                 };
                 function onRemoteDead(data) {
                    if(data.game == gameid){
-                       window.location.href = 'FrontPage.html';
+                       window.location.href = 'Win.html';
                    }
                 };
 

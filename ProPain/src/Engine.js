@@ -31,6 +31,7 @@ GameState.prototype.preload = function () {
 //
 GameState.prototype.create = function () {
     // Set stage background to something sky colored
+    localPlayer.character = this.game.character;
     this.game.stage.scale.pageAlignHorizontally = true;
     this.game.stage.scale.pageAlignVeritcally = true;
     
@@ -56,7 +57,7 @@ GameState.prototype.create = function () {
     //Create Player
     localPlayer.enablePlayer(this.game);
     try{
-        socket.emit("new player", {x: game.width/2 , y: game.height-100});
+        socket.emit("new player", {character: this.game.character, x: game.width/2 , y: game.height-100});
         console.log("Player sent");
     }catch(err){
         console.log("PLayer could not be sent");
@@ -316,12 +317,12 @@ GameState.prototype.update = function() {
         player.health -= 30;
         if(player.health <= 0){
             try{
-                socket.emit("dead", gameid);
+                socket.emit("dead", {game: gameid});
             }catch(err){
             }
 
             player.kill();
-            window.location.href = 'FrontPage.html';
+            window.location.href = 'Lose.html';
         }
         // Kill the powerup
         bullet.kill();

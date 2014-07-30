@@ -1,6 +1,7 @@
 var PlayerData = function(startX, startY) {
     var x = startX,
         y = startY,
+        character,
         game,
         id;
     

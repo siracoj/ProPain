@@ -52,9 +52,6 @@ var GameData = function() {
 function init() {
     players = [];
     games = [];
-    var firstGame = new GameData();
-    firstGame.id = 1;
-    games.push(firstGame);
   
     //Socket configuration
     
@@ -79,7 +76,6 @@ function onSocketConnection(client) {
     client.on("throw", onProjectile);
     client.on("disconnect", onClientDisconnect);
     client.on("dead", onRemoteDead);
-    client.emit("gameid", {game: games.length});    
 };
 
 function onRemoteDead(data){
@@ -106,16 +102,22 @@ function onNewPlayer(data){
     util.log("Player data arriving");
     var newPlayer = new PlayerData(data.x, data.y);
     newPlayer.id = this.id;
-    //util.log("Player "+newPlayer.id+" is at position: "+newPlayer.getX()+","+newPlayer.getY());
+    newPlayer.character = data.character;
     //send player to other clients
     
     players.push(newPlayer);
+    if(games[index] == null){
+        games.push(new GameData());
+        index = games.length - 1;
+        games[index].id = index+1;
+    }
+    this.emit("gameid", {game: games.length});    
     if(games[index].player1 == null){
         games[index].player1 = newPlayer;
     }else if(games[index].player2 == null){
         games[index].player2 = newPlayer;
         try{
-            this.emit("new player", {id: games[index].player1.id, game: index+1, x: newPlayer.getX(), y: newPlayer.getY()});  //emits player data to this client
+            this.emit("new player", {id: games[index].player1.id, game: index+1, character: games[index].player1.character, x: newPlayer.getX(), y: newPlayer.getY()});  //emits player data to this client
         }catch(err){
            util.log("Failed to send existing player");
            util.log(err);
@@ -129,7 +131,7 @@ function onNewPlayer(data){
         games[index].id = index+1;
     }
     try{
-        this.broadcast.emit("new player", {id: newPlayer.id, game: index+1, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
+        this.broadcast.emit("new player", {id: newPlayer.id, game: index+1, character: newPlayer.character, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
         util.log("Broadcast of player data successfull");
     }catch(err){
         util.log("Could not Broadcast player data: "+ err.message);
