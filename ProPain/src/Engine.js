@@ -15,17 +15,17 @@ var GameState = function (game) {
 
 // Load images and sounds
 GameState.prototype.preload = function () {
-    game.stage.disableVisibilityChange = true;
+    /*game.stage.disableVisibilityChange = true;
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);        
     this.game.load.spritesheet('DALE', '/assets/gfx/dalesprite.png',32,40,17);        
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
-    this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
+    //this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
     this.game.load.audio('themeMusic','assets/gfx/audio/KOTH Theme Song.mp3'); 
-};
+*/};
 
 
 //

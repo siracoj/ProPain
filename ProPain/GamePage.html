@@ -14,6 +14,8 @@
         <script type="text/javascript" src = "src/Player.js"></script>
         <script type="text/javascript"  src="lib/phaser.min.js"></script>
         <script type="text/javascript"  src="src/Engine.js"></script>
+        <script type="text/javascript"  src="src/Load.js"></script>
+        <script type="text/javascript"  src="src/Boot.js"></script>
         <script type="text/javascript"  src="src/CharSelect.js"></script>
         <script type="text/javascript"  src ="src/PowerUp.js"></script>
        <script  src="/socket.io/socket.io.js"></script>
@@ -77,9 +79,12 @@
 
                     game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain');
                     localPlayer = new Player(1,'TEST' ,socket.io.engine.id , game.width/2 ,game.height-100);
+                    
                     game.state.add('CharState', CharState);
                     game.state.add('GameState', GameState);
-                    game.state.start('CharState');
+                    game.state.add('LoadState', LoadState);
+                    game.state.add('BootState', BootState);
+                    game.state.start('BootState');
 
                 };
 
