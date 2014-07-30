@@ -40,21 +40,9 @@ Player.prototype.setY = function(newY) {
 };
     ///////////////////////////////////////Player Functions////////////////////////////////////////////////
 
-
-
-Player.prototype.loadPlayer = function(GameState){
-    //if(this.character == 'HANK'){
-        //GameState.game.load.image(this.playername, '/assets/gfx/hank.png');
-        GameState.game.load.spritesheet('hank', '/assets/gfx/hanksprite3.png',32,40,16);
-    /*}else if(this.character == 'DALE'){
-        this.playername = 'player2';
-        GameState.game.load.image(this.playername, 'assets/gfx/dale.png');
-    }*/
-}
-    
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
-    	this.sprite = GameState.add.sprite(this.x, this.y, 'hank');
+    this.sprite = GameState.add.sprite(this.x, this.y, this.character);
     this.facingRight = true;
         
     this.sprite.animations.add('walkRight',[1,2,3,4],10,true);
@@ -94,54 +82,56 @@ Player.prototype.movePlayer = function(GameState){
 
    
     
-    if ((GameState.leftInputIsActive() && this.playerNumber == 1) || (remoteLeft && this.playerNumber != 1)) {
+    if ((localLeft && this.playerNumber == 1) || (remoteLeft && this.playerNumber != 1)) {
         // If the LEFT key is down, set the player velocity to move left
         this.sprite.body.acceleration.x = -GameState.ACCELERATION;
         this.sprite.animations.play('walkLeft');
         this.facingRight = false;
-        if(this.playerNumber == 1){
-            try{
-                socket.emit('moveLeft');
-            
-        }catch(err){
-            //console.log("Move failed");
-        }
-        } 
         
-    } else if ((GameState.rightInputIsActive() && this.playerNumber == 1) || (remoteRight && this.playerNumber != 1)) {
+    } else if ((localRight && this.playerNumber == 1) || (remoteRight && this.playerNumber != 1)) {
         // If the RIGHT key is down, set the player velocity to move right
         this.sprite.body.acceleration.x = GameState.ACCELERATION;
         this.facingRight=true;
         this.sprite.animations.play('walkRight');
-        if(this.playerNumber == 1){
-            try{
-                socket.emit('moveRight');
-            
-        }catch(err){
-            //console.log("move failed");
-        }} 
-       
-
-    } else {
+    }else{
         this.sprite.body.acceleration.x = 0;
         if(this.facingRight){
             this.sprite.animations.play('standRight');
         }else{
             this.sprite.animations.play('standLeft');
         }
+    }
+
+    if(GameState.leftInputIsActive()){
         if(this.playerNumber == 1){
             try{
-                socket.emit('moveStop');
-            
-        }catch(err){
-            //console.log("Stop failed");
+                socket.emit('moveLeft',{id: this.id});
+
+            }catch(err){
+                //console.log("Move failed");
+            }
         }
-        } 
-       
+
+    }else if(GameState.rightInputIsActive()){
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('moveRight');
+
+            }catch(err){
+                //console.log("Move failed");
+            }
+        }
+    } else {
+        if(this.playerNumber == 1){
+            try{
+                socket.emit('moveStop',{id: this.id});
+
+            }catch(err){
+            }
+        }
+
     }
-    //insert animation call her
-    
-        
+
 }
 
 Player.prototype.basicAttackPlayer = function(GameState){
@@ -158,7 +148,7 @@ Player.prototype.jumpPlayer = function(GameState){
     var onTheGround = this.sprite.body.touching.down;
     if (onTheGround) this.canDoubleJump = true;
     
-    if ((GameState.upInputIsActive() && this.playerNumber == 1) || (remoteJump && this.playerNumber != 1)) {
+    if ((localJump && this.playerNumber == 1) || (remoteJump && this.playerNumber != 1)) {
         // Allow the player to adjust his jump height by holding the jump button
         if (this.canDoubleJump) this.canVariableJump = true;
 
@@ -169,27 +159,31 @@ Player.prototype.jumpPlayer = function(GameState){
             // Disable ability to double jump if the player is jumping in the air
             if (!onTheGround) this.canDoubleJump = false;
         }
+    }
+    if(GameState.upInputIsActive()){
         if(this.playerNumber == 1){
             try{
-                socket.emit('jump');
+                socket.emit('jump',{id: this.id});
             
-        }catch(err){
-           // console.log("jump failed");
-        }
+            }catch(err){
+                // console.log("jump failed");
+            }
         }
     }
 
 
     // Don't allow variable jump height after the jump button is released
-    if ((!GameState.upInputIsActive() && this.playerNumber == 1) || (!remoteJump && this.playerNumber != 1)) {
+    if ((!localJump && this.playerNumber == 1) || (!remoteJump && this.playerNumber != 1)) {
         this.canVariableJump = false;
+    }
+    if(!GameState.upInputIsActive()){
         if(this.playerNumber == 1){
             try{
-                socket.emit('jumpStop');
+                socket.emit('jumpStop',{id: this.id});
             
-        }catch(err){
-           // console.log("Stop failed");
-        }
+            }catch(err){
+               // console.log("Stop failed");
+            }
         }
     }
 }

@@ -1,14 +1,11 @@
-var text, socket, globalGame, music;
+var text,  music;
 
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
 var GameState = function (game) {
-    this.player = new Player(1, 'HANK', 'local', game.width/2 ,game.height-100);
     //ERROR HERE
     this.powerUp = new PowerUp(1,'BEER', 'local', game.width-500 ,game.height-100);
-    this.remotePlayers = [];
     this.game = game;
-    globalGame = game;
     // Start listening for events
     //this.setEventHandlers();
 };
@@ -18,9 +15,11 @@ var GameState = function (game) {
 
 // Load images and sounds
 GameState.prototype.preload = function () {
+    game.stage.disableVisibilityChange = true;
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('platform','assets/gfx/platform.png');
-    this.game.load.spritesheet('hank', '/assets/gfx/hanksprite4.png',32,40,17);        
+    this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);        
+    this.game.load.spritesheet('DALE', '/assets/gfx/dalesprite.png',32,40,17);        
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); //attempt to load a background image
@@ -55,7 +54,7 @@ GameState.prototype.create = function () {
     this.NUMBER_OF_BULLETS = 20;
 
     //Create Player
-    this.player.enablePlayer(this.game);
+    localPlayer.enablePlayer(this.game);
     try{
         socket.emit("new player", {x: game.width/2 , y: game.height-100});
         console.log("Player sent");
@@ -100,7 +99,7 @@ GameState.prototype.create = function () {
     
 //----------Create text------------
     this.healthDisplay = this.game.add.text(
-        this.game.world.centerX, this.game.world.centerY+280, this.player.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+        this.game.world.centerX, this.game.world.centerY+280, localPlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
     );
 //----------End of Text-----------
     
@@ -162,8 +161,6 @@ GameState.prototype.create = function () {
     this.fpsText = this.game.add.text(
         20, 20, '', { font: '16px Arial', fill: '#ffffff' }
     );
-    
-
 };
 
 //Create Platforms anywhere on the map and add if to the platform
@@ -277,17 +274,15 @@ GameState.prototype.update = function() {
         this.fpsText.setText(this.game.time.fps + ' FPS');
     }
 
-    //Update Player
-    this.player.movePlayer(this);
-    this.player.jumpPlayer(this);
-    var i; 
-    for(i = 0; i < remotePlayers.length; i++){
-        remotePlayers[i].movePlayer(this);
-        remotePlayers[i].jumpPlayer(this);
-    }
-    
+    /*Update Player
+    localPlayer.movePlayer(this);
+    localPlayer.jumpPlayer(this);
+    if(remotePlayer != null){
+        remotePlayer.movePlayer(this);
+        remotePlayer.jumpPlayer(this);
+    }*/
     //Update Health
-   this.healthDisplay.setText(this.player.sprite.health);
+    this.healthDisplay.setText(localPlayer.sprite.health);
     
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
@@ -323,7 +318,7 @@ GameState.prototype.update = function() {
     }, null, this);
     
     //player hit by bullet
-    this.game.physics.arcade.collide(this.player.sprite, this.remoteBulletPool, function(player, bullet) {
+    this.game.physics.arcade.collide(localPlayer.sprite, this.remoteBulletPool, function(player, bullet) {
         this.getExplosion(bullet.x, bullet.y);
         player.health -= 30;
         if(player.health <= 0){
@@ -333,33 +328,37 @@ GameState.prototype.update = function() {
             }
 
             player.kill();
-            if (confirm("You lost, try again?") == true) {
-                window.location.href = 'GamePage.html';
-            } else {
-                window.location.href = 'FrontPage.html';
-            }
+            window.location.href = 'GamePage.html';
         }
         // Kill the powerup
         bullet.kill();
     }, null, this);
     
-     this.game.physics.arcade.collide(this.player.sprite, this.powerUps, function(player, powerup) {
+    this.game.physics.arcade.collide(localPlayer.sprite, this.powerUps, function(player, powerup) {
         console.log("power up get");
         player.health += 30;
         // Kill the powerup
         powerup.kill();
     }, null, this);
     
-    for(i = 0; i < remotePlayers.length; i++){
-        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.powerUps, function(player, powerup) {
+    if(remotePlayer != null){
+        this.game.physics.arcade.collide(remotePlayer.sprite, this.powerUps, function(player, powerup) {
             console.log("power up get");
             // Kill the powerup
             powerup.kill();
         }, null, this);
-        this.game.physics.arcade.collide(remotePlayers[i].sprite, this.bulletPool, function(player, bullet){
+        this.game.physics.arcade.collide(remotePlayer.sprite, this.bulletPool, function(player, bullet){
             this.getExplosion(bullet.x, bullet.y);
         }, null, this);
     }
+    localPlayer.movePlayer(this);
+    localPlayer.jumpPlayer(this);
+    if(remotePlayer != null){
+        remotePlayer.movePlayer(this);
+        remotePlayer.jumpPlayer(this);
+    }
+
+
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
@@ -370,30 +369,38 @@ GameState.prototype.update = function() {
 
     //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
-        this.shootBullet(this.player);
         try{
-        socket.emit('throw');
+        socket.emit('throw',{id: localPlayer.id});
         }catch(err){
             console.log("Shoot failed");
         }
     }
+    if(localThrow){
+        this.shootBullet(localPlayer);
+        localThrow = false;
+    }
+        
     if(remoteThrow){
-        this.shootBullet(remotePlayers[0]);
+        this.shootBullet(remotePlayer);
         remoteThrow = false;
     }
     
     //Punch
     if(this.input.keyboard.justPressed(Phaser.Keyboard.S)){
-        this.player.basicAttackPlayer(); 
         try{
-            socket.emit('attack');
+            socket.emit('attack',{id: localPlayer.id});
          
         }catch(err){
             console.log("Punch failed");
         }
     }
+    if(localAttack){
+        localPlayer.basicAttackPlayer(); 
+        localAttack = false;
+    }
+ 
     if(remoteAttack){
-        remotePlayers[0].basicAttackPlayer();
+        remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
 };

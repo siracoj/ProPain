@@ -9,7 +9,8 @@ var util = require("util"),
     PlayerData = require("./playerdata").PlayerData;
 
 var socket,
-    players;
+    players,
+    games;
 
 
 
@@ -45,7 +46,7 @@ var socket,
 
 function init() {
     players = [];
-    
+    games = [];
     //Socket configuration
     
     setEventHandlers();
@@ -117,27 +118,62 @@ function onNewPlayer(data){
     players.push(newPlayer);
 };
 
-function onMoveRight(){
-    this.broadcast.emit("moveRight");
+function onMoveRight(data){
+    try{
+        this.broadcast.emit("moveRight",{id: this.id});
+        this.emit("moveRight",{id: this.id});
+    }catch(err){
+        util.log(err);
+    }
 };
-function onJump(){
-    this.broadcast.emit("jump");
+function onJump(data){
+    try{
+        this.broadcast.emit("jump",{id: data.id});
+        this.emit("jump",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
-function onJumpStop(){
-    this.broadcast.emit("jumpStop");
+function onJumpStop(data){
+    try{
+        this.broadcast.emit("jumpStop",{id: data.id});
+        this.emit("jumpStop",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
-function onAttack(){
-    this.broadcast.emit("attack");
+function onAttack(data){
+    try{
+        this.broadcast.emit("attack",{id: data.id});
+        this.emit("attack",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
-function onProjectile(){
-    this.broadcast.emit("throw");
+function onProjectile(data){
+    try{
+        this.broadcast.emit("throw",{id: data.id});
+        this.emit("throw",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
 
-function onMoveLeft(){
-    this.broadcast.emit("moveLeft");
+function onMoveLeft(data){
+    try{
+        this.broadcast.emit("moveLeft",{id: data.id});
+        this.emit("moveLeft",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
-function onMoveStop(){
-    this.broadcast.emit("moveStop");
+function onMoveStop(data){
+    try{
+        this.broadcast.emit("moveStop",{id: data.id});
+        this.emit("moveStop",{id: data.id});
+    }catch(err){
+        util.log(err);
+    }
 };
 
 init();
