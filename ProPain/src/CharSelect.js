@@ -13,14 +13,10 @@ CharState.prototype.preload = function() {
 
 CharState.prototype.create = function(){
     this.background = this.game.add.sprite(0,0,'fence');
-    this.dale = this.game.add.button(350,250,'hank',this.hankClick, this);
-    this.hank = this.game.add.button(325,350,'dale',this.daleClick, this);
-    this.boom = this.game.add.button(450,250,'hauer',this.boomClick, this);
-    this.bill = this.game.add.button(450,350,'bill',this.billClick, this);
-    this.dale.anchor.setTo(0.5,0.5);
-    this.hank.anchor.setTo(0.5,0.5);
-    this.boom.anchor.setTo(0.5,0.5);
-    this.bill.anchor.setTo(0.5,0.5);
+    this.dale = this.game.add.button(200,100,'hank',this.hankClick, this);
+    this.hank = this.game.add.button(400,100,'dale',this.daleClick, this);
+    this.boom = this.game.add.button(400,300,'hauer',this.boomClick, this);
+    this.bill = this.game.add.button(200,300,'bill',this.billClick, this);
     this.imHankHill= this.game.add.audio('sfxImHank');
     this.daleDisturbing = this.game.add.audio('sfxDaleSwornEnemy');
 };
