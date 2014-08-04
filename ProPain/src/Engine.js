@@ -288,7 +288,7 @@ GameState.prototype.getExplosion = function(x, y) {
     return explosion;
 };
 
-GameState.prototype.pocketSand = function(x, y, direction, islocal) {
+GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     var psand;
     if(islocal){
         psand = this.sandGroup.getFirstDead();
@@ -297,9 +297,15 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal) {
     }
 
     if(psand === null){
+        var animate;
+        if(character === 'DALE'){
         psand = this.game.add.sprite(0,0,'sand');
+        animate = psand.animations.add('cone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 100, false);
+        }else{
+        psand = this.game.add.sprite(0,0,'sound');
+        animate = psand.animations.add('cone', [0,1,2,3,4], 100, false);
+        }
         //psand.anchor.setTo(0.5, 0.5);
-        var animate = psand.animations.add('sandcone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 100, false);
         animate.killOnComplete = true;
         if(islocal){this.sandGroup.add(psand);}
         else{this.remoteSandGroup.add(psand);}
@@ -317,7 +323,7 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal) {
     if(direction === 'left'){
         psand.angle = 180;
     }
-    psand.animations.play('sandcone');
+    psand.animations.play('cone');
     return psand;
 
 };
@@ -453,11 +459,11 @@ GameState.prototype.update = function() {
         }
     }
     if(localThrow){
-        if(localPlayer.character === 'DALE'){
+        if(localPlayer.character === 'DALE' || localPlayer.character === 'BOOM'){
             if(localPlayer.facingRight){
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
             }else{
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
             }
         }else{
             this.shootBullet(localPlayer);
@@ -466,11 +472,11 @@ GameState.prototype.update = function() {
     }
         
     if(remoteThrow){
-         if(remotePlayer.character === 'DALE'){
+         if(remotePlayer.character === 'DALE' || remotePlayer === 'BOOM'){
             if(remotePlayer.facingRight){
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
             }else{
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
             }
         }else{
             this.shootBullet(remotePlayer);
