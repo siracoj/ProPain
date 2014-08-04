@@ -80,6 +80,7 @@
                         socket.on("attack", this.onAttack);
                         socket.on("throw", this.onProjectile);
                         socket.on("dead", this.onRemoteDead);
+                        socket.on("remove", this.onRemove);
                         socket.on("disconnect", this.onSocketDisconnect);
                         socket.on("gameid", this.setGame);
                         socket.on("no games", this.noGame);
@@ -209,6 +210,13 @@
                        //}
                    }
                 };
+                function onRemove(data) {
+                   if(data.game == gameid){
+                       game.outcome = "Opponent Disconnected";
+                       game.state.start("OutState");
+                   }
+                };
+
 
             </script>
         </div>

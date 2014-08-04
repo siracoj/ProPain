@@ -88,9 +88,9 @@ function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
     var i;
     for(i=0; i<players.length; i++){
-        if(players[i].id == this.id){
+        if(players[i].id === this.id){
             games.splice(players[i],1);
-            this.broadcast.emit("dead", {game: players[i].game});
+            this.broadcast.emit("remove", {game: players[i].game});
             players.splice(i,1);
         }
     }
@@ -104,23 +104,27 @@ function onNewPlayer(data){
     newPlayer.id = this.id;
     newPlayer.character = data.character;
     //send player to other clients   
-    players.push(newPlayer);
     
     
 
     if(data.gameRequest == 'create'){
         var newGame = new GameData();
         newGame.id = games.length;
+        newPlayer.game = newGame.id;
         this.emit("gameid", {game: newGame.id});    
         newGame.player1 = newPlayer;
+        players.push(newPlayer);
         games.push(newGame);
         return;
     }else{
         for(index = 0; index < games.length; index++){
             if(games[index].player2 == null){
+                newPlayer.game = index;
+                players.push(newPlayer);
                 games[index].player2 = newPlayer;
                 this.emit("gameid", {game: index});    
-                var otherPlayer = games[index].player1
+                
+                var otherPlayer = games[index].player1;
                 try{
                     //emits player data to this client
                     this.emit("new player", {id: otherPlayer.id, game: index, character: otherPlayer.character, x: otherPlayer.getX(), y: otherPlayer.getY()}); 
