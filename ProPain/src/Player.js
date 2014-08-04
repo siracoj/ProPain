@@ -105,8 +105,8 @@ Player.prototype.movePlayer = function(GameState){
     if(GameState.leftInputIsActive()){
         if(this.playerNumber == 1){
             try{
-                socket.emit('moveLeft',{id: this.id});
 
+                socket.emit('moveLeft',{id: this.id, health: this.sprite.health});
             }catch(err){
                 //console.log("Move failed");
             }
@@ -115,8 +115,8 @@ Player.prototype.movePlayer = function(GameState){
     }else if(GameState.rightInputIsActive()){
         if(this.playerNumber == 1){
             try{
-                socket.emit('moveRight');
 
+               socket.emit('moveRight',{health: this.sprite.health});
             }catch(err){
                 //console.log("Move failed");
             }
@@ -124,8 +124,8 @@ Player.prototype.movePlayer = function(GameState){
     } else {
         if(this.playerNumber == 1){
             try{
-                socket.emit('moveStop',{id: this.id});
 
+                socket.emit('moveStop',{id: this.id, health: this.sprite.health, x: this.sprite.body.x, y: this.sprite.body.y});
             }catch(err){
             }
         }

@@ -146,7 +146,7 @@ function updatePlayers(newPlayer, client, gameid){
 };
 function onMoveRight(data){
     try{
-        this.broadcast.emit("moveRight",{id: this.id});
+        this.broadcast.emit("moveRight",{id: this.id, health: data.health});
         this.emit("moveRight",{id: this.id});
     }catch(err){
         util.log(err);
@@ -187,7 +187,7 @@ function onProjectile(data){
 
 function onMoveLeft(data){
     try{
-        this.broadcast.emit("moveLeft",{id: data.id});
+        this.broadcast.emit("moveLeft",{id: data.id, health: data.health});
         this.emit("moveLeft",{id: data.id});
     }catch(err){
         util.log(err);
@@ -195,7 +195,7 @@ function onMoveLeft(data){
 };
 function onMoveStop(data){
     try{
-        this.broadcast.emit("moveStop",{id: data.id});
+        this.broadcast.emit("moveStop",{id: data.id, health: data.health, x: data.x, y: data.y});
         this.emit("moveStop",{id: data.id});
     }catch(err){
         util.log(err);

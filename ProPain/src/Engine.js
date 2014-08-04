@@ -101,21 +101,23 @@ GameState.prototype.create = function () {
 //----------create platforms---------
   this.platform = this.game.add.group();
     //PLatforms for first car
-    this.createPlatforms(0,130,100);
+    this.createPlatforms(100,300,125);
     //second car
-    this.createPlatforms(310,420,310);
+    this.createPlatforms(300,500,250);
     //Third car
-    this.createPlatforms(520,590,310);
     //Random Platform
    //this.createPlatforms(530,590,500);
     //Fourth car
-    this.createPlatforms(740,800,100);
+    this.createPlatforms(500,700,125);
 //---------End of Platforms-------------
     
     
 //----------Create text------------
     this.healthDisplay = this.game.add.text(
-        this.game.world.centerX, this.game.world.centerY+280, localPlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+        localPlayer.sprite.x, localPlayer.sprite.y+50, localPlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+    );
+    this.remoteHealthDisplay = this.game.add.text(
+        remotePlayer.sprite.x, remotePlayer.sprite.y+50, remotePlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
     );
 //----------End of Text-----------
     
@@ -291,9 +293,14 @@ GameState.prototype.update = function() {
         this.fpsText.setText(this.game.time.fps + ' FPS');
     }
 
+     
     //Update Health
     this.healthDisplay.setText(localPlayer.sprite.health);
-    
+    this.healthDisplay.x = localPlayer.sprite.x;
+    this.healthDisplay.y = localPlayer.sprite.y+50;
+    this.remoteHealthDisplay.setText(remotePlayer.sprite.health);
+    this.remoteHealthDisplay.x = remotePlayer.sprite.x;
+    this.remoteHealthDisplay.y = remotePlayer.sprite.y+50;
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
         // Create an explosion

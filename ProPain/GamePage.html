@@ -81,7 +81,7 @@
                         socket.on("dead", this.onRemoteDead);
                         socket.on("disconnect", this.onSocketDisconnect);
                         socket.on("gameid", this.setGame);
-                        socket.on("no game", this.noGame);
+                        socket.on("no games", this.noGame);
                     }catch(err){
                         console.log("Offline mode");
                     }
@@ -98,7 +98,6 @@
 
                     game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain');
                     localPlayer = new Player(1,'TEST' ,socket.io.engine.id , game.width/2 ,game.height-100);
-                    
                     game.state.add('GameState', GameState);
                     game.state.add('CharState', CharState);
                     game.state.add('LoadState', LoadState);
@@ -136,6 +135,7 @@
                        localLeft = true;
                    }else if(data.id == remotePlayer.id){ 
                        remoteLeft = true;
+                      remotePlayer.sprite.health = data.health;
                    }
                   };
                 function onMoveRight(data) {
@@ -145,6 +145,7 @@
                        localRight = true;
                    }else if(data.id == remotePlayer.id){
                        remoteRight = true;
+                       remotePlayer.sprite.health = data.health;
                    }
                 };
                 function onMoveStop(data) {
@@ -155,6 +156,9 @@
                    }else if(data.id == remotePlayer.id){
                        remoteRight = false;
                        remoteLeft = false;
+                       remotePlayer.sprite.health = data.health;
+                       remotePlayer.sprite.body.x = data.x;
+                       remotePlayer.sprite.body.y = data.y;
                    }
                 };
                 function onJump(data) {

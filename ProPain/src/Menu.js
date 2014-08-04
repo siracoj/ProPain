@@ -8,11 +8,15 @@ MenuState.prototype.preload = function() {
 
 MenuState.prototype.create = function(){
     this.background = this.game.add.sprite(0,0,'menubackground');
-    this.create = this.game.add.button(150,500,'create',this.createClick, this,'createover','create','createdown','create');
-    this.join = this.game.add.button(650,500,'join',this.joinClick, this,'joinover','join','joindown','join');
+    this.create = this.game.add.button(150,500,'create',this.createClick, this);
+    this.join = this.game.add.button(650,500,'join',this.joinClick, this);
     this.create.anchor.setTo(0.5,0.5);
     this.join.anchor.setTo(0.5,0.5);
 };
+
+MenuState.prototype.update = function(){
+    
+}
 
 MenuState.prototype.createClick = function(){
     this.game.gameRequest = 'create';

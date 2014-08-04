@@ -12,7 +12,7 @@ CharState.prototype.preload = function() {
 };
 
 CharState.prototype.create = function(){
-    this.background = this.game.add.sprite(-10,0,'background');
+    this.background = this.game.add.sprite(0,0,'fence');
     this.dale = this.game.add.button(300,300,'hank',this.hankClick, this);
     this.hank = this.game.add.button(500,300,'dale',this.daleClick, this);
     this.dale.anchor.setTo(0.5,0.5);
