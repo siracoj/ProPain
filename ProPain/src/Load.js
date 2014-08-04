@@ -19,11 +19,14 @@ LoadState.prototype.preload = function() {
     //game
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('hauer', 'assets/gfx/Boomhauer.png');
+    this.game.load.image('bill', 'assets/gfx/bill.png');
     this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
+    this.game.load.spritesheet('sand', 'assets/gfx/pocketsand2.png', 40, 42, 14);
     this.game.load.spritesheet('DALE', '/assets/gfx/dalesprite.png',32,40,17);
     this.game.load.spritesheet('BOOM', '/assets/gfx/boomhauersprite.png',32,40,17);
+    this.game.load.spritesheet('BILL', '/assets/gfx/billsprite.png',32,40,17);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); 
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
