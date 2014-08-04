@@ -9,8 +9,8 @@ LoadState.prototype.preload = function() {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
     this.game.stage.disableVisibilityChange = true;
-    this.game.load.image('tankbar', 'assets/gfx/tankbar.png');
     this.game.load.image('waitforplay', 'assets/gfx/waiting.png');
+    this.game.load.image('tankbar', 'assets/gfx/tankbar.png');
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);
@@ -20,6 +20,14 @@ LoadState.prototype.preload = function() {
     this.game.load.image('background', 'assets/gfx/background.jpg'); 
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
     
+    //menu
+    this.game.load.image('create', 'assets/gfx/creategame.png');
+    this.game.load.image('createover', 'assets/gfx/createover.png');
+    this.game.load.image('createdown', 'assets/gfx/createdown.png');
+    this.game.load.image('join', 'assets/gfx/join.png');
+    this.game.load.image('joinover', 'assets/gfx/joinover.png');
+    this.game.load.image('joindown', 'assets/gfx/joindown.png');
+
     //audio
     this.game.load.audio('themeMusic','assets/gfx/audio/KOTH Theme Song.mp3');
     this.game.load.audio('sfxExplosion','assets/gfx/audio/Explosion.mp3');
@@ -37,7 +45,7 @@ LoadState.prototype.create = function() {
 };
 LoadState.prototype.update = function() {
     if(!!this.ready) {
-        this.game.state.start('CharState');
+        this.game.state.start('MenuState');
     }
 };
 LoadState.prototype.onLoadComplete = function() {

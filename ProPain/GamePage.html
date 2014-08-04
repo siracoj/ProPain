@@ -14,8 +14,9 @@
         <script type="text/javascript" src = "src/Player.js"></script>
         <script type="text/javascript"  src="lib/phaser.min.js"></script>
         <script type="text/javascript"  src="src/Engine.js"></script>
-        <script type="text/javascript"  src="src/Load.js"></script>
         <script type="text/javascript"  src="src/Wait.js"></script>
+        <script type="text/javascript"  src="src/Load.js"></script>
+        <script type="text/javascript"  src="src/Menu.js"></script>
         <script type="text/javascript"  src="src/Boot.js"></script>
         <script type="text/javascript"  src="src/CharSelect.js"></script>
         <script type="text/javascript"  src ="src/PowerUp.js"></script>
@@ -89,8 +90,9 @@
                     
                     game.state.add('GameState', GameState);
                     game.state.add('CharState', CharState);
-                    game.state.add('WaitState', WaitState);
                     game.state.add('LoadState', LoadState);
+                    game.state.add('WaitState', WaitState);
+                    game.state.add('MenuState', MenuState);
                     game.state.add('BootState', BootState);
                     game.state.start('BootState');
 
