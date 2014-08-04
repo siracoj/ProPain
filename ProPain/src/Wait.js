@@ -5,7 +5,7 @@ WaitState.prototype.preload = function(){
 };
 
 WaitState.prototype.create = function(){
-    this.title = this.add.sprite(400,300, 'propainlogo');
+    this.title = this.add.sprite(400,200, 'waitforplay');
     this.title.anchor.setTo(0.5, 0.5);
     this.waitBar = this.game.add.tileSprite(0,400,800,29,'tankbar');
     this.waitBar.autoScroll(-200,0);
