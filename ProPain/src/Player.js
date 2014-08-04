@@ -6,6 +6,7 @@ function Player(playerNumber, character, id, x, y) {
     
     //////////////////////////////////////////Properties////////////////////////////////////////////////////
 
+    this.facingRight = true;
     this.id = id;
     //Player 1,2,...
     this.playerNumber = playerNumber;  
@@ -43,7 +44,6 @@ Player.prototype.setY = function(newY) {
 Player.prototype.enablePlayer = function(GameState){
     //Load Player sprite and animations
     this.sprite = GameState.add.sprite(this.x, this.y, this.character);
-    this.facingRight = true;
         
     this.sprite.animations.add('walkRight',[1,2,3,4],10,true);
     this.sprite.animations.add('walkLeft',[10,11,12,13],10,true);

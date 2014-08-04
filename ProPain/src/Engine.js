@@ -165,6 +165,8 @@ GameState.prototype.create = function () {
 //----------End PowerUp-------------
     // Create a group for explosions
     this.explosionGroup = this.game.add.group();
+    this.sandGroup = this.game.add.group();
+    this.remoteSandGroup = this.game.add.group();
 
     // Capture certain keys to prevent their default actions in the browser.
     // This is only necessary because this is an HTML5 game. Games on other
@@ -286,7 +288,50 @@ GameState.prototype.getExplosion = function(x, y) {
     return explosion;
 };
 
+GameState.prototype.pocketSand = function(x, y, direction, islocal) {
+    var psand;
+    if(islocal){
+        psand = this.sandGroup.getFirstDead();
+    }else{
+        psand = this.remoteSandGroup.getFirstDead();
+    }
 
+    if(psand === null){
+        psand = this.game.add.sprite(0,0,'sand');
+        //psand.anchor.setTo(0.5, 0.5);
+        var animate = psand.animations.add('sandcone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 100, false);
+        animate.killOnComplete = true;
+        if(islocal){this.sandGroup.add(psand);}
+        else{this.remoteSandGroup.add(psand);}
+    }
+    
+    this.game.physics.enable(psand, Phaser.Physics.ARCADE);
+    psand.body.allowGravity = false;
+    psand.body.immovable = true;
+
+    psand.revive();
+
+    psand.x = x;
+    psand.y = y;
+
+    if(direction === 'left'){
+        psand.angle = 180;
+    }
+    psand.animations.play('sandcone');
+    return psand;
+
+};
+
+GameState.prototype.playerLoses = function(player){
+    try{
+        socket.emit("dead", {game: gameid});
+    }catch(err){}
+
+    player.kill();
+    this.game.outcome = "You Lose";
+    this.game.state.start("OutState");
+
+};
 // The update() method is called every frame
 GameState.prototype.update = function() {
     
@@ -330,7 +375,21 @@ GameState.prototype.update = function() {
         // Kill the bullet
         bullet.kill();
     }, null, this);
+
+
+    this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
+        player.health -= 10;
+        if(player.health <= 0){
+            this.playerLoses(player);
+        }
+        sand.kill()
+
+    }, null, this);
     
+    this.game.physics.arcade.collide(remotePlayer.sprite, this.sandGroup, function(player, sand) {
+
+    sand.kill(); }, null, this);
+
     this.game.physics.arcade.collide(this.remoteBulletPool, this.platform, function(bullet, ground) {
         // Create an explosion
         this.getExplosion(bullet.x, bullet.y);
@@ -344,20 +403,7 @@ GameState.prototype.update = function() {
         this.getExplosion(bullet.x, bullet.y);
         player.health -= 30;
         if(player.health <= 0){
-            try{
-                socket.emit("dead", {game: gameid});
-            }catch(err){
-            }
-
-            player.kill();
-            //window.location.href = 'Lose.html';
-           // this.game.losses++;
-            //if(this.game.losses >= 3){
-                this.game.outcome = "You Lose";
-                this.game.state.start("OutState");
-            //}else{
-              //  this.game.state.start("GameState");
-            //}
+            this.playerLoses(player);
         }
         // Kill the powerup
         bullet.kill();
@@ -395,6 +441,8 @@ GameState.prototype.update = function() {
     this.remoteBulletPool.forEachAlive(function(bullet) {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
     }, this);
+    
+        
 
     //Throw propain
     if(this.input.keyboard.justPressed(Phaser.Keyboard.A)){
@@ -405,12 +453,28 @@ GameState.prototype.update = function() {
         }
     }
     if(localThrow){
-        this.shootBullet(localPlayer);
+        if(localPlayer.character === 'DALE'){
+            if(localPlayer.facingRight){
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true);
+            }else{
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true);
+            }
+        }else{
+            this.shootBullet(localPlayer);
+        }
         localThrow = false;
     }
         
     if(remoteThrow){
-        this.shootBullet(remotePlayer);
+         if(remotePlayer.character === 'DALE'){
+            if(remotePlayer.facingRight){
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false);
+            }else{
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false);
+            }
+        }else{
+            this.shootBullet(remotePlayer);
+        }
         remoteThrow = false;
     }
     
