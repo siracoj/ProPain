@@ -8,7 +8,8 @@ CharState.prototype.preload = function() {
     this.load.image('background', 'assets/gfx/background.jpg');
     this.load.audio('sfxImHank','assets/gfx/audio/Hank - Hank Hill.mp3');
     this.game.load.audio('sfxDaleSwornEnemy','assets/gfx/audio/Dale - Sworn Enemy.mp3');
-    
+    this.load.audio('sfxBoom','assets/gfx/audio/Boomhauer - Makes fun of Hank.mp3');
+    this.load.audio('sfxBill','assets/gfx/audio/Bill - Win for Longhorns.mp3');
 };
 
 CharState.prototype.create = function(){
@@ -19,9 +20,11 @@ CharState.prototype.create = function(){
     this.bill = this.game.add.button(200,300,'bill',this.billClick, this);
     this.imHankHill= this.game.add.audio('sfxImHank');
     this.daleDisturbing = this.game.add.audio('sfxDaleSwornEnemy');
+   // this.sfxBill = this.game.add.audio
 };
 
 CharState.prototype.billClick = function(){
+    //thi
     this.game.character = 'BILL';
     this.game.state.start('WaitState');
 
