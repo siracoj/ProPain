@@ -20,11 +20,12 @@ CharState.prototype.create = function(){
     this.bill = this.game.add.button(200,300,'bill',this.billClick, this);
     this.imHankHill= this.game.add.audio('sfxImHank');
     this.daleDisturbing = this.game.add.audio('sfxDaleSwornEnemy');
-   // this.sfxBill = this.game.add.audio
+    this.sfxBill = this.game.add.audio('sfxBill');
+    this.sfxBoom = this.game.add.audio('sfxBoom');
 };
 
 CharState.prototype.billClick = function(){
-    //thi
+    this.sfxBill.play();
     this.game.character = 'BILL';
     this.game.state.start('WaitState');
 
@@ -32,6 +33,7 @@ CharState.prototype.billClick = function(){
 
 
 CharState.prototype.boomClick = function(){
+    this.sfxBoom.play();
     this.game.character = 'BOOM';
     this.game.state.start('WaitState');
 

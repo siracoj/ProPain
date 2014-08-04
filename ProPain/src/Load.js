@@ -12,7 +12,7 @@ LoadState.prototype.preload = function() {
     this.game.stage.disableVisibilityChange = true;
     this.game.load.image('waitforplay', 'assets/gfx/waitingtxt.png');
     this.game.load.image('fence', 'assets/gfx/fence.png');
-    this.game.load.image('nogames', 'assets/gfx/nogames.png');
+    this.game.load.image('nogames', 'assets/gfx/nogamestxt.png');
     this.game.load.image('tankbar', 'assets/gfx/tankbar.png');
     this.game.load.image('menubutton', 'assets/gfx/menu.png');
 
