@@ -67,6 +67,15 @@ GameState.prototype.create = function () {
     this.NUMBER_OF_BULLETS = 20;
 
     //Create Player
+    if(this.game.gameRequest == 'create'){
+        localPlayer.x = 150;
+        remotePlayer.x = 650;
+    }else{
+        localPlayer.x = 650;
+        remotePlayer.x = 150;
+    }
+    localPlayer.y = 300;
+    remotePlayer.y = 300;
     localPlayer.enablePlayer(this.game);
     remotePlayer.enablePlayer(this.game);
 

@@ -29,7 +29,7 @@ var GameData = function() {
         //By default, we forward the / path to index.html automatically.
     app.get( '/', function( req, res ){
         console.log('trying to load %s', __dirname + '/GamePage.html');
-        res.sendfile( '/FrontPage.html' , { root:__dirname });
+        res.sendfile( '/GamePage.html' , { root:__dirname });
     });
 
 
@@ -97,41 +97,48 @@ function onClientDisconnect() {
 }
 
 function onNewPlayer(data){
-    var index = games.length - 1;
+    var index;
     //create player server data
     util.log("Player data arriving");
     var newPlayer = new PlayerData(data.x, data.y);
     newPlayer.id = this.id;
     newPlayer.character = data.character;
-    //send player to other clients
-    
+    //send player to other clients   
     players.push(newPlayer);
-    if(games[index] == null){
-        games.push(new GameData());
-        index = games.length - 1;
-        games[index].id = index+1;
-    }
-    this.emit("gameid", {game: games.length});    
-    if(games[index].player1 == null){
-        games[index].player1 = newPlayer;
-    }else if(games[index].player2 == null){
-        games[index].player2 = newPlayer;
-        try{
-            this.emit("new player", {id: games[index].player1.id, game: index+1, character: games[index].player1.character, x: newPlayer.getX(), y: newPlayer.getY()});  //emits player data to this client
-        }catch(err){
-           util.log("Failed to send existing player");
-           util.log(err);
-        }
-        util.log("Existing player sent with ID: "+newPlayer.id);
+    
+    
 
+    if(data.gameRequest == 'create'){
+        var newGame = new GameData();
+        newGame.id = games.length;
+        this.emit("gameid", {game: newGame.id});    
+        newGame.player1 = newPlayer;
+        games.push(newGame);
+        return;
     }else{
-        games.push(new GameData());
-        index++;
-        games[index].player1 = newPlayer;
-        games[index].id = index+1;
-    }
+        for(index = 0; index < games.length; index++){
+            if(games[index].player2 == null){
+                games[index].player2 = newPlayer;
+                this.emit("gameid", {game: index});    
+                var otherPlayer = games[index].player1
+                try{
+                    //emits player data to this client
+                    this.emit("new player", {id: otherPlayer.id, game: index, character: otherPlayer.character, x: otherPlayer.getX(), y: otherPlayer.getY()}); 
+                }catch(err){
+                    util.log("Failed to send existing player");
+                    util.log(err);
+                }
+                util.log("Existing player sent with ID: "+otherPlayer.id);
+                updatePlayers(newPlayer, this, index); 
+                return;
+            }
+        }
+        this.emit("no games");
+     }
+};
+function updatePlayers(newPlayer, client, gameid){
     try{
-        this.broadcast.emit("new player", {id: newPlayer.id, game: index+1, character: newPlayer.character, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
+        client.broadcast.emit("new player", {id: newPlayer.id, game: gameid, character: newPlayer.character, x: newPlayer.getX(), y: newPlayer.getY()}); //emits player data to all clients
         util.log("Broadcast of player data successfull");
     }catch(err){
         util.log("Could not Broadcast player data: "+ err.message);

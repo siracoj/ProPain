@@ -10,7 +10,7 @@ WaitState.prototype.create = function(){
     this.waitBar = this.game.add.tileSprite(0,400,800,29,'tankbar');
     this.waitBar.autoScroll(-200,0);
     try{
-        socket.emit("new player", {character: this.game.character, x: game.width/2 , y: game.height-100});
+        socket.emit("new player", {gameRequest: this.game.gameRequest, character: this.game.character, x: game.width/2 , y: game.height-100});
         console.log("Player sent");
     }catch(err){
         console.log("PLayer could not be sent");

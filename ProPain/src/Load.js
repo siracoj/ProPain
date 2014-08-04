@@ -21,6 +21,7 @@ LoadState.prototype.preload = function() {
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
     
     //menu
+    this.game.load.image('menubackground', 'assets/gfx/MainMenu.png');
     this.game.load.image('create', 'assets/gfx/creategame.png');
     this.game.load.image('createover', 'assets/gfx/createover.png');
     this.game.load.image('createdown', 'assets/gfx/createdown.png');

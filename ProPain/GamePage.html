@@ -43,8 +43,12 @@
                     console.log(err);
                 }
                 
+                //matchmaking
                 var gameid;
                 var otherPlayerReady = false;
+                var noGames = false;
+
+                //movement
                 var remoteLeft = false;
                 var remoteRight = false;
                 var remoteJump = false;
@@ -55,8 +59,11 @@
                 var localJump = false;
                 var localAttack = false;
                 var localThrow = false;
+                
+                //players
                 var localPlayer;
                 var remotePlayer = new Player(0, 'TEST', 0,0,0);
+
                 window.onload = function() {
                         setEventHandlers();
                 };
@@ -74,10 +81,14 @@
                         socket.on("dead", this.onRemoteDead);
                         socket.on("disconnect", this.onSocketDisconnect);
                         socket.on("gameid", this.setGame);
+                        socket.on("no game", this.noGame);
                     }catch(err){
                         console.log("Offline mode");
                     }
                     };
+                function noGame(){
+                    noGames = true;
+                }
                 function setGame(data){
                    console.log(data.game);
                     gameid = data.game;
