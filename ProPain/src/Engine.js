@@ -1,4 +1,4 @@
-var text,  music;
+var text,  music, explosion, imHankHill, hankHeckOfaNerve, hankKickAss, hankProjectAnger, daleSwornEnemy, daleDisturbing, boomhauer;
 
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
@@ -43,6 +43,16 @@ GameState.prototype.create = function () {
     this.music = this.game.add.audio('themeMusic');
     this.music.play();
     this.music.volume = .5;
+   /* 
+    this.explosion = this.game.add.audio('');
+    this.imHankHill
+    this.hankHeckOfaNerve
+    this.hankKickAss
+    this.hankProjectAnger
+    this.daleSwornEnemy
+    this.daleDisturbing
+    this.boomhauer
+*/
 
     // Define movement constants
     this.MAX_SPEED = 250; // pixels/second
