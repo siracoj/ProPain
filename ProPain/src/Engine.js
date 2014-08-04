@@ -472,7 +472,7 @@ GameState.prototype.update = function() {
     }
         
     if(remoteThrow){
-         if(remotePlayer.character === 'DALE' || remotePlayer === 'BOOM'){
+         if(remotePlayer.character === 'DALE' || remotePlayer.character === 'BOOM'){
             if(remotePlayer.facingRight){
                 this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
             }else{
