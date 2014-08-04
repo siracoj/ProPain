@@ -114,11 +114,13 @@ GameState.prototype.create = function () {
     
 //----------Create text------------
     this.healthDisplay = this.game.add.text(
-        localPlayer.sprite.x, localPlayer.sprite.y+50, localPlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+        localPlayer.sprite.x, localPlayer.sprite.y+50, "You: "+localPlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
     );
     this.remoteHealthDisplay = this.game.add.text(
-        remotePlayer.sprite.x, remotePlayer.sprite.y+50, remotePlayer.sprite.health, { font: '16px Arial', fill: '#ffffff' }
+        remotePlayer.sprite.x, remotePlayer.sprite.y+50, "Enemy: "+remotePlayer.sprite.health, { font: '16px Arial', fill: 'red' }
     );
+    this.healthDisplay.anchor.setTo(0.5,0.5);
+    this.remoteHealthDisplay.anchor.setTo(0.5,0.5);
 //----------End of Text-----------
     
     
@@ -295,12 +297,15 @@ GameState.prototype.update = function() {
 
      
     //Update Health
-    this.healthDisplay.setText(localPlayer.sprite.health);
+    this.healthDisplay.setText("You: "+localPlayer.sprite.health);
     this.healthDisplay.x = localPlayer.sprite.x;
     this.healthDisplay.y = localPlayer.sprite.y+50;
-    this.remoteHealthDisplay.setText(remotePlayer.sprite.health);
+    this.remoteHealthDisplay.setText("Enemy: "+remotePlayer.sprite.health);
     this.remoteHealthDisplay.x = remotePlayer.sprite.x;
     this.remoteHealthDisplay.y = remotePlayer.sprite.y+50;
+    this.healthDisplay.anchor.setTo(0.5,0.5);
+    this.remoteHealthDisplay.anchor.setTo(0.5,0.5);
+
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
@@ -345,7 +350,14 @@ GameState.prototype.update = function() {
             }
 
             player.kill();
-            window.location.href = 'Lose.html';
+            //window.location.href = 'Lose.html';
+           // this.game.losses++;
+            //if(this.game.losses >= 3){
+                this.game.outcome = "You Lose";
+                this.game.state.start("OutState");
+            //}else{
+              //  this.game.state.start("GameState");
+            //}
         }
         // Kill the powerup
         bullet.kill();

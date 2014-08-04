@@ -18,6 +18,7 @@
         <script type="text/javascript"  src="src/Load.js"></script>
         <script type="text/javascript"  src="src/Menu.js"></script>
         <script type="text/javascript"  src="src/Boot.js"></script>
+        <script type="text/javascript"  src="src/Outcome.js"></script>
         <script type="text/javascript"  src="src/CharSelect.js"></script>
         <script type="text/javascript"  src ="src/PowerUp.js"></script>
        <script  src="/socket.io/socket.io.js"></script>
@@ -97,6 +98,8 @@
                     console.log("Connected to socket server");
 
                     game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain');
+                    game.wins = 0;
+                    game.losses = 0;
                     localPlayer = new Player(1,'TEST' ,socket.io.engine.id , game.width/2 ,game.height-100);
                     game.state.add('GameState', GameState);
                     game.state.add('CharState', CharState);
@@ -104,6 +107,7 @@
                     game.state.add('WaitState', WaitState);
                     game.state.add('MenuState', MenuState);
                     game.state.add('BootState', BootState);
+                    game.state.add('OutState', OutState);
                     game.state.start('BootState');
 
                 };
@@ -195,7 +199,14 @@
                 };
                 function onRemoteDead(data) {
                    if(data.game == gameid){
-                       window.location.href = 'Win.html';
+                       //window.location.href = 'Win.html';
+                       //GameState.game.wins++;
+                       //if(GameState.game.wins >= 3){
+                       game.outcome = "You Win";
+                       game.state.start("OutState");
+                       //}else{
+                         //  GameState.game.state.start("GameState");
+                       //}
                    }
                 };
 
