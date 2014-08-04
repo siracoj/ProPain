@@ -17,8 +17,18 @@ LoadState.prototype.preload = function() {
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); 
     this.game.load.image('powerup','assets/gfx/beer-sprite.png');
+    
+    //audio
     this.game.load.audio('themeMusic','assets/gfx/audio/KOTH Theme Song.mp3');
-
+    this.game.load.audio('sfxExplosion','assets/gfx/audio/Explosion.mp3');
+    //this.game.load.audio('sfxImHank','assets/gfx/audio/Hank - Hank Hill.mp3');
+    this.game.load.audio('sfxHankKickAss','assets/gfx/audio/Hank - Kick his ass.mp3');
+    this.game.load.audio('sfxHankProjectAnger','assets/gfx/audio/Hank - Project my anger.mp3');
+    this.game.load.audio('sfxHankHeckNerve','assets/gfx/audio/Hank - heck of a nerve.mp3');
+    //this.game.load.audio('sfxDaleSwornEnemy','assets/gfx/audio/Dale - Sworn Enemy.mp3');
+    this.game.load.audio('sfxDaleDisturbing','assets/gfx/audio/Dale - Disturbing Image.mp3');
+    this.game.load.audio('sfxBillWinLonghorns','assets/gfx/audio/Bill - Win for Longhorns.mp3');
+    this.game.load.audio('sfxBoomhauer','assets/gfx/audio/Boomhauer Makes fun of Hank.mp3');
 };
 LoadState.prototype.create = function() {
     this.asset.cropEnabled = false;

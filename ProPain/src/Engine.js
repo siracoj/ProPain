@@ -1,4 +1,4 @@
-var text,  music, explosion, imHankHill, hankHeckOfaNerve, hankKickAss, hankProjectAnger, daleSwornEnemy, daleDisturbing, boomhauer;
+var text,  music, sfxBoom, imHankHill, hankHeckOfaNerve, hankKickAss, hankProjectAnger, daleSwornEnemy, daleDisturbing, boomhauer, billLonghorns;
 
 ///////////////////////////////////GAMESTATE//////////////////////////////////
 
@@ -42,17 +42,19 @@ GameState.prototype.create = function () {
     //Audio
     this.music = this.game.add.audio('themeMusic');
     this.music.play();
-    this.music.volume = .5;
-   /* 
-    this.explosion = this.game.add.audio('');
-    this.imHankHill
-    this.hankHeckOfaNerve
-    this.hankKickAss
-    this.hankProjectAnger
-    this.daleSwornEnemy
-    this.daleDisturbing
-    this.boomhauer
-*/
+    //this.music.volume = .5;
+    
+    
+    this.sfxBoom = this.game.add.audio('sfxExplosion');
+    this.imHankHill= this.game.add.audio('sfxHank');
+    this.hankHeckOfaNerve = this.add.audio('sfxHankHeckNerve');
+    this.hankKickAss = this.add.audio('sfxHankKickAss');
+    this.hankProjectAnger = this.add.audio('sfxHankProjectAnger');
+    this.daleSwornEnemy = this.add.audio('sfxDaleSwornEnemy');
+    this.daleDisturbing = this.add.audio('sfxDaleDisturbing');
+    this.boomhauer = this.add.audio('sfxBoomhauer');
+    this.billLonghorns = this.add.audio('sfxBillWinLonghorns');
+    
 
     // Define movement constants
     this.MAX_SPEED = 250; // pixels/second
@@ -271,7 +273,8 @@ GameState.prototype.getExplosion = function(x, y) {
 
     // Play the animation
     explosion.animations.play('boom');
-
+    this.sfxBoom.play();
+    this.sfxBoom.volume = .5;
     // Return the explosion itself in case we want to do anything else with it
     return explosion;
 };
