@@ -10,7 +10,7 @@ LoadState.prototype.preload = function() {
 
     //splash screens
     this.game.stage.disableVisibilityChange = true;
-    this.game.load.image('waitforplay', 'assets/gfx/waiting.png');
+    this.game.load.image('waitforplay', 'assets/gfx/waitingtxt.png');
     this.game.load.image('fence', 'assets/gfx/fence.png');
     this.game.load.image('nogames', 'assets/gfx/nogames.png');
     this.game.load.image('tankbar', 'assets/gfx/tankbar.png');
