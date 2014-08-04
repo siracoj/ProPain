@@ -15,10 +15,17 @@ CharState.prototype.create = function(){
     this.background = this.game.add.sprite(0,0,'fence');
     this.dale = this.game.add.button(300,300,'hank',this.hankClick, this);
     this.hank = this.game.add.button(500,300,'dale',this.daleClick, this);
+    this.boom = this.game.add.button(400,300,'hauer',this.boomClick, this);
     this.dale.anchor.setTo(0.5,0.5);
     this.hank.anchor.setTo(0.5,0.5);
+    this.boom.anchor.setTo(0.5,0.5);
     this.imHankHill= this.game.add.audio('sfxImHank');
     this.daleDisturbing = this.game.add.audio('sfxDaleSwornEnemy');
+};
+CharState.prototype.boomClick = function(){
+    this.game.character = 'BOOM';
+    this.game.state.start('WaitState');
+
 };
 
 CharState.prototype.hankClick = function(){

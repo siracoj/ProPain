@@ -18,6 +18,7 @@ LoadState.prototype.preload = function() {
 
     //game
     this.game.load.image('ground', 'assets/gfx/ground.png');
+    this.game.load.image('hauer', 'assets/gfx/Boomhauer.png');
     this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);
     this.game.load.spritesheet('explosion', 'assets/gfx/explosion.png', 40, 40);
