@@ -24,12 +24,12 @@ CharState.prototype.create = function(){
 CharState.prototype.hankClick = function(){
     this.imHankHill.play();
     this.game.character = 'HANK';
-    this.game.state.start('GameState');
+    this.game.state.start('WaitState');
     
 };
 CharState.prototype.daleClick = function(){
     this.daleDisturbing.play();
     this.game.character = 'DALE';
-    this.game.state.start('GameState');
+    this.game.state.start('WaitState');
 };
 

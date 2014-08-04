@@ -15,6 +15,7 @@
         <script type="text/javascript"  src="lib/phaser.min.js"></script>
         <script type="text/javascript"  src="src/Engine.js"></script>
         <script type="text/javascript"  src="src/Load.js"></script>
+        <script type="text/javascript"  src="src/Wait.js"></script>
         <script type="text/javascript"  src="src/Boot.js"></script>
         <script type="text/javascript"  src="src/CharSelect.js"></script>
         <script type="text/javascript"  src ="src/PowerUp.js"></script>
@@ -42,6 +43,7 @@
                 }
                 
                 var gameid;
+                var otherPlayerReady = false;
                 var remoteLeft = false;
                 var remoteRight = false;
                 var remoteJump = false;
@@ -85,8 +87,9 @@
                     game = new Phaser.Game(800, 600, Phaser.AUTO, 'propain');
                     localPlayer = new Player(1,'TEST' ,socket.io.engine.id , game.width/2 ,game.height-100);
                     
-                    game.state.add('CharState', CharState);
                     game.state.add('GameState', GameState);
+                    game.state.add('CharState', CharState);
+                    game.state.add('WaitState', WaitState);
                     game.state.add('LoadState', LoadState);
                     game.state.add('BootState', BootState);
                     game.state.start('BootState');
@@ -105,12 +108,12 @@
                      
                        var newPlayer = new Player(2, data.character, data.id, data.x, data.y);
                        try{
-                           newPlayer.enablePlayer(game);
                            remotePlayer = newPlayer;
                        }catch(err){
                            console.log("New Player failed to be created");
                            console.log(err);
                        }
+                       otherPlayerReady = true;
                    }
                 };
 

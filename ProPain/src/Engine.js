@@ -68,13 +68,7 @@ GameState.prototype.create = function () {
 
     //Create Player
     localPlayer.enablePlayer(this.game);
-    try{
-        socket.emit("new player", {character: this.game.character, x: game.width/2 , y: game.height-100});
-        console.log("Player sent");
-    }catch(err){
-        console.log("PLayer could not be sent");
-        console.log(err.message);
-    }
+    remotePlayer.enablePlayer(this.game);
 
     
     // Since we're jumping we need gravity

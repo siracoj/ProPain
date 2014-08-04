@@ -9,6 +9,7 @@ LoadState.prototype.preload = function() {
     this.load.onLoadComplete.addOnce(this.onLoadComplete, this);
 
     this.game.stage.disableVisibilityChange = true;
+    this.game.load.image('tankbar', 'assets/gfx/tankbar.png');
     this.game.load.image('ground', 'assets/gfx/ground.png');
     this.game.load.image('platform','assets/gfx/platform.png');
     this.game.load.spritesheet('HANK', '/assets/gfx/hanksprite4.png',32,40,17);
