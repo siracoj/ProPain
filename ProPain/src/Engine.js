@@ -159,6 +159,45 @@ GameState.prototype.create = function () {
         // Set its initial state to "dead".
         bullet.kill();
     }
+//--------------Pizza Bullet-------------------
+    
+    
+    // Create an object pool of bullets
+    this.pizzaPool = this.game.add.group();
+    for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
+        // Create each bullet and add it to the group.
+        var pizza = this.game.add.sprite(0, 0, 'pizza');
+        this.pizzaPool.add(pizza);
+
+        // Set its pivot point to the center of the bullet
+        pizza.anchor.setTo(0.5, 0.5);
+
+        // Enable physics on the bullet
+        this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
+
+        // Set its initial state to "dead".
+       pizza.kill();
+    }
+      
+    // Create an object pool of bullets for the opponent 
+    this.remotePizzaPool = this.game.add.group();
+    for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
+        // Create each bullet and add it to the group.
+        var pizza = this.game.add.sprite(0, 0, 'pizza');
+        this.remotePizzaPool.add(pizza);
+
+        // Set its pivot point to the center of the bullet
+        pizza.anchor.setTo(0.5, 0.5);
+
+        // Enable physics on the bullet
+        this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
+
+        // Set its initial state to "dead".
+        pizza.kill();
+    }
+    
+    //----------End of pizza creation---------------
+    
     //----------Create PowerUp----------
     
     this.powerUp.enablePowerUp(this);
@@ -248,6 +287,54 @@ GameState.prototype.shootBullet = function(player) {
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
 
+GameState.prototype.shootPizza = function(player) {
+    // Enforce a short delay between shots by recording
+    // the time that each bullet is shot and testing if
+    // the amount of time since the last shot is more than
+    // the required delay.
+    if (this.lastPizzaShotAt === undefined) this.lastPizzaShotAt = 0;
+    if (this.game.time.now - this.lastPizzaShotAt < this.SHOT_DELAY) return;
+    this.lastPizzaShotAt = this.game.time.now;
+    var pizza;
+    // Get a dead bullet from the pool
+    if(player.playerNumber == 1){
+        pizza = this.pizzaPool.getFirstDead();
+    }else{
+        pizza = this.remotePizzaPool.getFirstDead();
+    }
+    
+    this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
+
+    // If there aren't any bullets available then don't shoot
+    if (pizza === null || pizza === undefined) return;
+
+    // Revive the bullet
+    // This makes the bullet "alive"
+    pizza.revive();
+    
+    
+    
+    // Bullets should kill themselves when they leave the world.
+    // Phaser takes care of this for me by setting this flag
+    // but you can do it yourself by killing the bullet if
+    // its x,y coordinates are outside of the world.
+    pizza.checkWorldBounds = true;
+    pizza.outOfBoundsKill = true;
+    
+    //puts the bullet at the players position
+    pizza.reset(player.sprite.x, player.sprite.y);
+
+    // Set the bullet position to the gun position.
+    pizza.rotation = player.sprite.rotation;
+
+    // Shoot it in the right direction
+    if(player.facingRight){
+        pizza.body.velocity.x = Math.cos(pizza.rotation) * this.BULLET_SPEED;
+    }else{
+        pizza.body.velocity.x = -Math.cos(pizza.rotation) * this.BULLET_SPEED;
+    }
+    pizza.body.velocity.y = Math.sin(pizza.rotation) * this.BULLET_SPEED;
+};
 
 
 GameState.prototype.getExplosion = function(x, y) {
@@ -356,6 +443,69 @@ GameState.prototype.update = function() {
     this.remoteHealthDisplay.y = remotePlayer.sprite.y+50;
     this.healthDisplay.anchor.setTo(0.5,0.5);
     this.remoteHealthDisplay.anchor.setTo(0.5,0.5);
+    
+    //---------------Pizza Collision-------------
+    
+    this.game.physics.arcade.collide(this.remotePizzaPool, this.platform, function(pizza, ground) {
+        // Create an explosion
+        this.getExplosion(pizza.x, pizza.y);
+
+        // Kill the bullet
+        pizza.kill();
+    }, null, this);
+    
+    //player hit by pizza
+    this.game.physics.arcade.collide(localPlayer.sprite, this.remotePizzaPool, function(player, pizza) {
+        this.getExplosion(pizza.x, pizza.y);
+        player.health -= 30;
+        if(player.health <= 0){
+            this.playerLoses(player);
+        }
+        // Kill the powerup
+        pizza.kill();
+    }, null, this);
+    
+    // Check if pizzas have collided with the ground
+    this.game.physics.arcade.collide(this.pizzaPool, this.ground, function(pizza, ground) {
+        // Create an explosion
+        this.getExplosion(pizza.x, pizza.y);
+
+        // Kill the bullet
+        pizza.kill();
+    }, null, this);
+    
+    this.game.physics.arcade.collide(this.remotePizzaPool, this.ground, function(pizza, ground) {
+        // Create an explosion
+        this.getExplosion(pizza.x, pizza.y );
+
+        // Kill the bullet
+        pizza.kill();
+    }, null, this);
+    
+    this.game.physics.arcade.collide(this.pizzaPool, this.platform, function(pizza, ground) {
+        // Create an explosion
+        this.getExplosion(pizza.x, pizza.y);
+
+        // Kill the bullet
+        pizza.kill();
+    }, null, this);
+    
+     this.game.physics.arcade.collide(remotePlayer.sprite, this.pizzaPool, function(player, pizza){
+            this.getExplosion(pizza.x, pizza.y);
+            //NEW code...need?
+            player.health -= 30;
+        if(player.health <= 0){
+           // this.playerWins(player);
+            player.kill();
+            //NEED TO SET WIN CONDITION HERE******************************************
+        }
+        // Kill the powerup
+        pizza.kill();
+            
+        //END NEW CODE
+        }, null, this);
+    
+    //---------------End Pizza Collision------------
 
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
@@ -368,7 +518,7 @@ GameState.prototype.update = function() {
     
     this.game.physics.arcade.collide(this.remoteBulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
-        this.getExplosion(bullet.x, bullet.y);
+        this.getExplosion(bullet.x, bullet.y );
 
         // Kill the bullet
         bullet.kill();
@@ -388,7 +538,7 @@ GameState.prototype.update = function() {
         if(player.health <= 0){
             this.playerLoses(player);
         }
-        sand.kill()
+        sand.kill();
 
     }, null, this);
     
@@ -430,6 +580,16 @@ GameState.prototype.update = function() {
         }, null, this);
         this.game.physics.arcade.collide(remotePlayer.sprite, this.bulletPool, function(player, bullet){
             this.getExplosion(bullet.x, bullet.y);
+            //NEW code...need?
+            player.health -= 30;
+        if(player.health <= 0){
+          player.kill();
+            //NEED TO SET WIN CONDITION HERE******************************************
+        }
+        // Kill the powerup
+        bullet.kill();
+            
+        //END NEW CODE
         }, null, this);
     }
     localPlayer.movePlayer(this);
@@ -465,8 +625,11 @@ GameState.prototype.update = function() {
             }else{
                 this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
             }
-        }else{
+        }
+        if(localPlayer.character === 'HANK'){
             this.shootBullet(localPlayer);
+        }else{
+            this.shootPizza(localPlayer);
         }
         localThrow = false;
     }
@@ -478,8 +641,11 @@ GameState.prototype.update = function() {
             }else{
                 this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
             }
+        }
+        if(localPlayer.character === 'HANK'){
+            this.shootBullet(localPlayer);
         }else{
-            this.shootBullet(remotePlayer);
+            this.shootPizza(localPlayer);
         }
         remoteThrow = false;
     }

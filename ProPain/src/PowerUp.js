@@ -40,7 +40,7 @@ PowerUp.prototype.setY = function(newY) {
 
 PowerUp.prototype.loadPowerUp = function(GameState){
         GameState.game.load.image('powerup','assets/gfx/beer-sprite.png');//loads powerup image
-    
+        GameState.game.load.image('powerup','assets/gfx/beer-sprite.png')
 }
     
 PowerUp.prototype.enablePowerUp = function(GameState){
