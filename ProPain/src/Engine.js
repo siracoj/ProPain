@@ -439,6 +439,7 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
         }
         //psand.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
+        psand.anchor.setTo(0.5,0.5);
         if(islocal){this.sandGroup.add(psand);}
         else{this.remoteSandGroup.add(psand);}
     }
@@ -446,15 +447,17 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     this.game.physics.enable(psand, Phaser.Physics.ARCADE);
     psand.body.allowGravity = false;
     psand.body.immovable = true;
-
     psand.revive();
 
     psand.x = x;
     psand.y = y;
 
     if(direction === 'left'){
-        psand.angle = 180;
+        psand.scale.x *= -1;
+    }else{
+        psand.x += 20;
     }
+        
     psand.animations.play('cone');
     return psand;
 
