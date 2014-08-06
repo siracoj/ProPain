@@ -455,7 +455,7 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     psand.y = y;
 
     if(direction === 'left'){
-    psand.angle = 180;
+    //psand.angle = 180;
     }else{
     }
     psand.animations.play('cone');
