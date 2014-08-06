@@ -212,6 +212,8 @@ GameState.prototype.create = function () {
     // Create a group for explosions
     this.explosionGroup = this.game.add.group();
     this.sandGroup = this.game.add.group();
+    this.rsandGroup = this.game.add.group();
+    this.rremoteSandGroup = this.game.add.group();
     this.remoteSandGroup = this.game.add.group();
 
     // Capture certain keys to prevent their default actions in the browser.
@@ -425,39 +427,72 @@ GameState.prototype.getExplosion = function(x, y) {
 GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     var psand;
     if(islocal){
-        psand = this.sandGroup.getFirstDead();
+        if(direction == 'right'){
+            psand = this.sandGroup.getFirstDead();
+        }else{
+            psand = this.rsandGroup.getFirstDead();
+        }
     }else{
-        psand = this.remoteSandGroup.getFirstDead();
+        if(direction == 'right'){
+            psand = this.remoteSandGroup.getFirstDead();
+        }else{
+            psand = this.rremoteSandGroup.getFirstDead();
+        }
     }
 
     if(psand === null){
         var animate;
         if(character === 'DALE'){
-        psand = this.game.add.sprite(0,0,'sand');
-        animate = psand.animations.add('cone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 100, false);
+            if(direction == 'right'){
+                psand = this.game.add.sprite(0,0,'sand');
+                animate = psand.animations.add('cone', [0,1,2,3,4,5,6,7,8,9,10,11,12,13], 100, false);
+            }else{
+                psand = this.game.add.sprite(0,0,'rsand');
+                animate = psand.animations.add('cone', [13,12,11,10,9,8,7,6,5,4,3,2,1,0], 100, false);
+            }
         }else{
-        psand = this.game.add.sprite(0,0,'sound');
-        animate = psand.animations.add('cone', [0,1,2,3,4], 100, false);
+            if(direction == 'right'){
+                psand = this.game.add.sprite(0,0,'sound');
+                animate = psand.animations.add('cone', [0,1,2,3,4], 40, false);
+            }else{
+                psand = this.game.add.sprite(0,0,'rsound');
+                animate = psand.animations.add('cone', [4,3,2,1,0], 40, false);
+            }
         }
         //psand.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
-        if(islocal){this.sandGroup.add(psand);}
-        else{this.remoteSandGroup.add(psand);}
+        if(islocal){
+            if(direction == 'right'){
+                this.sandGroup.add(psand);
+            }else{
+                this.rsandGroup.add(psand);
+            }
+        }else{
+            if(direction == 'right'){
+                this.remoteSandGroup.add(psand);
+            }else{
+                this.rremoteSandGroup.add(psand);
+            }
+        }
+
     }
     
     this.game.physics.enable(psand, Phaser.Physics.ARCADE);
     psand.body.allowGravity = false;
-    psand.body.immovable = true;
+    psand.checkWorldBounds = true;
+    psand.outOfBoundsKill = true;
 
     psand.revive();
 
-    psand.x = x;
-    psand.y = y;
-
-    if(direction === 'left'){
-    //psand.angle = 180;
+    
+    if(direction == 'right'){
+        psand.reset(x+10,y)
+        psand.body.velocity.x = 100;
     }else{
-    }
+        psand.reset(x-20,y)
+        psand.body.velocity.x = -100;
+    } 
+
     psand.animations.play('cone');
     return psand;
 
@@ -591,7 +626,6 @@ GameState.prototype.update = function() {
         bullet.kill();
     }, null, this);
 
-    //sand fucking fuck
     this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
         player.health -= 10;
         if(player.health <= 0){
@@ -600,11 +634,21 @@ GameState.prototype.update = function() {
         sand.kill();
 
     }, null, this);
-    
+   this.game.physics.arcade.collide(localPlayer.sprite, this.rremoteSandGroup, function(player, sand) {
+        player.health -= 10;
+        if(player.health <= 0){
+            this.playerLoses(player);
+        }
+        sand.kill();
+
+    }, null, this); 
     this.game.physics.arcade.collide(remotePlayer.sprite, this.sandGroup, function(player, sand) {
 
     sand.kill(); }, null, this);
-    //END GOD
+    this.game.physics.arcade.collide(remotePlayer.sprite, this.rsandGroup, function(player, sand) {
+
+    sand.kill(); }, null, this);
+
     
     this.game.physics.arcade.collide(this.remoteBulletPool, this.platform, function(bullet, ground) {
         // Create an explosion
@@ -653,7 +697,6 @@ GameState.prototype.update = function() {
     remotePlayer.movePlayer(this);
     remotePlayer.jumpPlayer(this);
 
-
     // Rotate all living bullets to match their trajectory
     this.bulletPool.forEachAlive(function(bullet) {
         bullet.rotation = Math.atan2(bullet.body.velocity.y, bullet.body.velocity.x);
@@ -675,9 +718,9 @@ GameState.prototype.update = function() {
     if(localThrow){
         if(localPlayer.character === 'DALE' || localPlayer.character === 'BOOM'){
             if(localPlayer.facingRight){
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
             }else{
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
             }
         }
         else if(localPlayer.character === 'HANK'){
@@ -691,9 +734,9 @@ GameState.prototype.update = function() {
     if(remoteThrow){
          if(remotePlayer.character === 'DALE' || remotePlayer.character === 'BOOM'){
             if(remotePlayer.facingRight){
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
             }else{
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
             }
         }
         else if(remotePlayer.character === 'HANK'){
