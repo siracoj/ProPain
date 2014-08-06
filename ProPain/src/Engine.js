@@ -293,7 +293,7 @@ GameState.prototype.shootBullet = function(player) {
     }
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
-///*
+
 GameState.prototype.shootPizza = function(player) {
     // Enforce a short delay between shots by recording
     // the time that each bullet is shot and testing if
@@ -343,7 +343,7 @@ GameState.prototype.shootPizza = function(player) {
     pizza.body.velocity.y = Math.sin(pizza.rotation) * this.BULLET_SPEED;
 };
 
-///*
+
 
 
 GameState.prototype.punch = function(x, y, direction, islocal, character) {
@@ -359,7 +359,7 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
         punch = this.game.add.sprite(0,0,'sand');
         animate = punch.animations.add('cone', [0], 100, false);
         
-        punch.anchor.setTo(0.5, 0.5);
+        //punch.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
         if(islocal){this.punchGroup.add(punch);}
         else{this.remotePunchGroup.add(punch);}
@@ -373,19 +373,15 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
 
     punch.x = x;
     punch.y = y;
-    punch.y += 20;
 
     if(direction === 'left'){
-        punch.scale.x *= -1;
-        punch.x += 20;
-    }else{
+       punch.angle = 180;
     }
-
     punch.animations.play('cone');
     return punch;
 
 };
-//*/
+
 GameState.prototype.getExplosion = function(x, y) {
     // Get the first dead explosion from the explosionGroup
     var explosion = this.explosionGroup.getFirstDead();
@@ -441,10 +437,8 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
         psand = this.game.add.sprite(0,0,'sound');
         animate = psand.animations.add('cone', [0,1,2,3,4], 100, false);
         }
-        psand.wasLeft = false;
         //psand.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
-       // psand.anchor.setTo(0.5,0.5);
         if(islocal){this.sandGroup.add(psand);}
         else{this.remoteSandGroup.add(psand);}
     }
@@ -452,19 +446,15 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     this.game.physics.enable(psand, Phaser.Physics.ARCADE);
     psand.body.allowGravity = false;
     psand.body.immovable = true;
+
     psand.revive();
 
     psand.x = x;
     psand.y = y;
 
-    if(direction === 'left'  && !psand.wasLeft){
-        psand.scale.x *= -1;
-        psand.wasLeft = true;
-    }else if(direction == 'right'){
-        psand.x += 20;
-        psand.wasLeft = false;
+    if(direction === 'left'){
+        psand.angle = 180;
     }
-        
     psand.animations.play('cone');
     return psand;
 
@@ -500,6 +490,7 @@ GameState.prototype.update = function() {
     this.remoteHealthDisplay.anchor.setTo(0.5,0.5);
     
     //---------------Pizza Collision-------------
+    
     this.game.physics.arcade.collide(this.remotePizzaPool, this.platform, function(pizza, ground) {
         // Create an explosion
         this.getExplosion(pizza.x, pizza.y);
@@ -596,6 +587,7 @@ GameState.prototype.update = function() {
         // Kill the bullet
         bullet.kill();
     }, null, this);
+
     //sand fucking fuck
     this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
         player.health -= 10;
@@ -607,7 +599,6 @@ GameState.prototype.update = function() {
     }, null, this);
     
     this.game.physics.arcade.collide(remotePlayer.sprite, this.sandGroup, function(player, sand) {
-        console.log("hit");
 
     sand.kill(); }, null, this);
     //END GOD
@@ -645,19 +636,19 @@ GameState.prototype.update = function() {
         }, null, this);
         this.game.physics.arcade.collide(remotePlayer.sprite, this.bulletPool, function(player, bullet){
             this.getExplosion(bullet.x, bullet.y);
+            //NEW code...need?
+            player.health -= 30;
         if(player.health <= 0){
-          player.kill();
-            //NEED TO SET WIN CONDITION HERE******************************************
         }
+        // Kill the powerup
         bullet.kill();
             
+        //END NEW CODE
         }, null, this);
     localPlayer.movePlayer(this);
     localPlayer.jumpPlayer(this);
-    if(remotePlayer.playerNumber == 2){
-        remotePlayer.movePlayer(this);
-        remotePlayer.jumpPlayer(this);
-    }
+    remotePlayer.movePlayer(this);
+    remotePlayer.jumpPlayer(this);
 
 
     // Rotate all living bullets to match their trajectory
@@ -681,9 +672,9 @@ GameState.prototype.update = function() {
     if(localThrow){
         if(localPlayer.character === 'DALE' || localPlayer.character === 'BOOM'){
             if(localPlayer.facingRight){
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
             }else{
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
             }
         }
         else if(localPlayer.character === 'HANK'){
@@ -697,12 +688,12 @@ GameState.prototype.update = function() {
     if(remoteThrow){
          if(remotePlayer.character === 'DALE' || remotePlayer.character === 'BOOM'){
             if(remotePlayer.facingRight){
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
             }else{
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
             }
         }
-        if(localPlayer.character === 'HANK'){
+        else if(remotePlayer.character === 'HANK'){
             this.shootBullet(remotePlayer);
         }else{
             this.shootPizza(remotePlayer);
@@ -720,21 +711,13 @@ GameState.prototype.update = function() {
         }
     }
     if(localAttack){
-        if(localPlayer.facingRight){
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
-        }else{
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
-        }       
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',false, localPlayer.character);
         localPlayer.basicAttackPlayer(); 
         localAttack = false;
     }
  
     if(remoteAttack){
-        if(remotePlayer.facingRight){
-        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
-        }else{
-        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
-        }
+        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
