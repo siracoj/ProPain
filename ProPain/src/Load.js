@@ -53,6 +53,7 @@ LoadState.prototype.preload = function() {
     this.game.load.audio('sfxDaleDisturbing','assets/gfx/audio/Dale - Disturbing Image.mp3');
     this.game.load.audio('sfxBillWinLonghorns','assets/gfx/audio/Bill - Win for Longhorns.mp3');
     this.game.load.audio('sfxBoomhauer','assets/gfx/audio/Boomhauer Makes fun of Hank.mp3');
+    this.game.load.audio('searching','assets/gfx/audio/Searching.mp3');
 };
 LoadState.prototype.create = function() {
     this.asset.cropEnabled = false;

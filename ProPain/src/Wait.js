@@ -8,6 +8,8 @@ WaitState.prototype.create = function(){
     this.background = this.game.add.sprite(0,0,'fence');
     this.title = this.add.sprite(400,200, 'waitforplay');
     this.title.anchor.setTo(0.5, 0.5);
+    this.searching = this.game.add.audio('searching');
+    this.searching.play();
     this.waitBar = this.game.add.tileSprite(0,500,800,29,'tankbar');
     this.waitBar.autoScroll(-200,0);
     this.menubutton = this.game.add.button(400,350,'menubutton',this.menuClick, this);
@@ -19,7 +21,7 @@ WaitState.prototype.create = function(){
         console.log("PLayer could not be sent");
         console.log(err.message);
     }
-
+    
 };
 
 WaitState.prototype.update = function(){
