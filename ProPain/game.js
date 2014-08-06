@@ -81,30 +81,20 @@ function onSocketConnection(client) {
 function onRemoteDead(data){
     try{
         this.broadcast.emit("dead", {game: data.game});
-        removeGame(this.id);
     }catch(err){
     }
-};
+}
 function onClientDisconnect() {
     util.log("Player has disconnected: "+this.id);
-    var thisPlayer = removeGame(this.id);
-    try{
-    this.broadcast.emit("remove", {game: thisPlayer.game});
-    }catch(err){
-    }
-};
-function removeGame(id){
-   var deletedPlayer;
-   var i;
-   for(i=0; i<players.length; i++){
+    var i;
+    for(i=0; i<players.length; i++){
         if(players[i].id === this.id){
-            deletedPlayer = players[i]; 
             games.splice(players[i],1);
+            this.broadcast.emit("remove", {game: players[i].game});
             players.splice(i,1);
         }
     }
-    return deletedPlayer;
-};
+}
 
 function onNewPlayer(data){
     var index;
