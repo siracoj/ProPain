@@ -646,14 +646,18 @@ GameState.prototype.update = function() {
         this.game.physics.arcade.collide(remotePlayer.sprite, this.bulletPool, function(player, bullet){
             this.getExplosion(bullet.x, bullet.y);
         if(player.health <= 0){
+          player.kill();
+            //NEED TO SET WIN CONDITION HERE******************************************
         }
         bullet.kill();
             
         }, null, this);
     localPlayer.movePlayer(this);
     localPlayer.jumpPlayer(this);
-    remotePlayer.movePlayer(this);
-    remotePlayer.jumpPlayer(this);
+    if(remotePlayer.playerNumber == 2){
+        remotePlayer.movePlayer(this);
+        remotePlayer.jumpPlayer(this);
+    }
 
 
     // Rotate all living bullets to match their trajectory
@@ -698,7 +702,7 @@ GameState.prototype.update = function() {
                 this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
             }
         }
-        else if(remotePlayer.character === 'HANK'){
+        if(localPlayer.character === 'HANK'){
             this.shootBullet(remotePlayer);
         }else{
             this.shootPizza(remotePlayer);
