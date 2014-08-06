@@ -359,7 +359,7 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
         punch = this.game.add.sprite(0,0,'sand');
         animate = punch.animations.add('cone', [0], 100, false);
         
-        //punch.anchor.setTo(0.5, 0.5);
+        punch.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
         if(islocal){this.punchGroup.add(punch);}
         else{this.remotePunchGroup.add(punch);}
@@ -373,10 +373,14 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
 
     punch.x = x;
     punch.y = y;
+    punch.y += 20;
 
     if(direction === 'left'){
-       punch.angle = 180;
+        punch.scale.x *= -1;
+        punch.x += 20;
+    }else{
     }
+
     punch.animations.play('cone');
     return punch;
 
@@ -451,6 +455,7 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
 
     psand.x = x;
     psand.y = y;
+    psand.y += 20;
 
     if(direction === 'left'){
         psand.scale.x *= -1;
@@ -593,6 +598,7 @@ GameState.prototype.update = function() {
 
     //sand fucking fuck
     this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
+        console.log("hit");
         player.health -= 10;
         if(player.health <= 0){
             this.playerLoses(player);
@@ -675,9 +681,9 @@ GameState.prototype.update = function() {
     if(localThrow){
         if(localPlayer.character === 'DALE' || localPlayer.character === 'BOOM'){
             if(localPlayer.facingRight){
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
             }else{
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
             }
         }
         else if(localPlayer.character === 'HANK'){
@@ -691,9 +697,9 @@ GameState.prototype.update = function() {
     if(remoteThrow){
          if(remotePlayer.character === 'DALE' || remotePlayer.character === 'BOOM'){
             if(remotePlayer.facingRight){
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
             }else{
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
             }
         }
         else if(remotePlayer.character === 'HANK'){
@@ -714,13 +720,21 @@ GameState.prototype.update = function() {
         }
     }
     if(localAttack){
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',false, localPlayer.character);
+        if(localPlayer.facingRight){
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
+        }else{
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
+        }       
         localPlayer.basicAttackPlayer(); 
         localAttack = false;
     }
  
     if(remoteAttack){
-        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
+        if(remotePlayer.facingRight){
+        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
+        }else{
+        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
+        }
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
