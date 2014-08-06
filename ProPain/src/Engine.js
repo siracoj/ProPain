@@ -201,7 +201,7 @@ GameState.prototype.create = function () {
     
     //--------------Punch -------------------
     this.punchGroup = this.game.add.group();
-    
+    this.remotePunchGroup = this.game.add.group();
     //----------End of punch creation---------------
     
     
@@ -588,7 +588,7 @@ GameState.prototype.update = function() {
         bullet.kill();
     }, null, this);
 
-
+    //sand fucking fuck
     this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
         player.health -= 10;
         if(player.health <= 0){
@@ -601,7 +601,8 @@ GameState.prototype.update = function() {
     this.game.physics.arcade.collide(remotePlayer.sprite, this.sandGroup, function(player, sand) {
 
     sand.kill(); }, null, this);
-
+    //END GOD
+    
     this.game.physics.arcade.collide(this.remoteBulletPool, this.platform, function(bullet, ground) {
         // Create an explosion
         this.getExplosion(bullet.x, bullet.y);
@@ -710,13 +711,13 @@ GameState.prototype.update = function() {
         }
     }
     if(localAttack){
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',false, localPlayer.character);
         localPlayer.basicAttackPlayer(); 
-        this.punch();
         localAttack = false;
     }
  
     if(remoteAttack){
-        this.punch();
+        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
