@@ -27,6 +27,7 @@ WaitState.prototype.create = function(){
 
 WaitState.prototype.update = function(){
     if(otherPlayerReady){
+        this.searching.stop();
        this.game.state.start("GameState"); 
     }else if(noGames){
        this.title.destroy()
