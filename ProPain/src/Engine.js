@@ -702,7 +702,7 @@ GameState.prototype.update = function() {
                 this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
             }
         }
-        if(localPlayer.character === 'HANK'){
+        else if(localPlayer.character === 'HANK'){
             this.shootBullet(remotePlayer);
         }else{
             this.shootPizza(remotePlayer);
