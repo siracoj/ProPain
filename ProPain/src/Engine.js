@@ -41,7 +41,7 @@ GameState.prototype.create = function () {
     
     //Audio
     this.music = this.game.add.audio('themeMusic');
-    this.music.play();
+    //this.music.play();
     //this.music.volume = .5;
     
     
@@ -493,13 +493,6 @@ GameState.prototype.update = function() {
      this.game.physics.arcade.collide(remotePlayer.sprite, this.pizzaPool, function(player, pizza){
             this.getExplosion(pizza.x, pizza.y);
             //NEW code...need?
-            player.health -= 30;
-        if(player.health <= 0){
-           // this.playerWins(player);
-            this.playerLoses(player);
-            player.kill();
-            //NEED TO SET WIN CONDITION HERE******************************************
-        }
         // Kill the powerup
         pizza.kill();
             
@@ -573,7 +566,6 @@ GameState.prototype.update = function() {
         powerup.kill();
     }, null, this);
     
-    if(remotePlayer.playerNumber == 2){
         this.game.physics.arcade.collide(remotePlayer.sprite, this.powerUps, function(player, powerup) {
             console.log("power up get");
             // Kill the powerup
@@ -592,7 +584,6 @@ GameState.prototype.update = function() {
             
         //END NEW CODE
         }, null, this);
-    }
     localPlayer.movePlayer(this);
     localPlayer.jumpPlayer(this);
     if(remotePlayer.playerNumber == 2){
@@ -644,9 +635,9 @@ GameState.prototype.update = function() {
             }
         }
         if(localPlayer.character === 'HANK'){
-            this.shootBullet(localPlayer);
+            this.shootBullet(remotePlayer);
         }else{
-            this.shootPizza(localPlayer);
+            this.shootPizza(remotePlayer);
         }
         remoteThrow = false;
     }
