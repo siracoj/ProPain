@@ -496,6 +496,7 @@ GameState.prototype.update = function() {
             player.health -= 30;
         if(player.health <= 0){
            // this.playerWins(player);
+            this.playerLoses(player);
             player.kill();
             //NEED TO SET WIN CONDITION HERE******************************************
         }
@@ -626,7 +627,7 @@ GameState.prototype.update = function() {
                 this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
             }
         }
-        if(localPlayer.character === 'HANK'){
+        else if(localPlayer.character === 'HANK'){
             this.shootBullet(localPlayer);
         }else{
             this.shootPizza(localPlayer);
