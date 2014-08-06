@@ -41,7 +41,7 @@ GameState.prototype.create = function () {
     
     //Audio
     this.music = this.game.add.audio('themeMusic');
-    //this.music.play();
+    this.music.play();
     //this.music.volume = .5;
     
     
@@ -159,52 +159,6 @@ GameState.prototype.create = function () {
         // Set its initial state to "dead".
         bullet.kill();
     }
-//--------------Pizza Bullet-------------------
-    
-    
-    // Create an object pool of bullets
-    this.pizzaPool = this.game.add.group();
-    for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
-        // Create each bullet and add it to the group.
-        var pizza = this.game.add.sprite(0, 0, 'pizza');
-        this.pizzaPool.add(pizza);
-
-        // Set its pivot point to the center of the bullet
-        pizza.anchor.setTo(0.5, 0.5);
-
-        // Enable physics on the bullet
-        this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
-
-        // Set its initial state to "dead".
-       pizza.kill();
-    }
-      
-    // Create an object pool of bullets for the opponent 
-    this.remotePizzaPool = this.game.add.group();
-    for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
-        // Create each bullet and add it to the group.
-        var pizza = this.game.add.sprite(0, 0, 'pizza');
-        this.remotePizzaPool.add(pizza);
-
-        // Set its pivot point to the center of the bullet
-        pizza.anchor.setTo(0.5, 0.5);
-
-        // Enable physics on the bullet
-        this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
-
-        // Set its initial state to "dead".
-        pizza.kill();
-    }
-    
-    //----------End of pizza creation---------------
-    
-    
-    //--------------Punch -------------------
-    this.punchGroup = this.game.add.group();
-    this.remotePunchGroup = this.game.add.group();
-    //----------End of punch creation---------------
-    
-    
     //----------Create PowerUp----------
     
     this.powerUp.enablePowerUp(this);
@@ -293,99 +247,9 @@ GameState.prototype.shootBullet = function(player) {
     }
     bullet.body.velocity.y = Math.sin(bullet.rotation) * this.BULLET_SPEED;
 };
-///*
-GameState.prototype.shootPizza = function(player) {
-    // Enforce a short delay between shots by recording
-    // the time that each bullet is shot and testing if
-    // the amount of time since the last shot is more than
-    // the required delay.
-    if (this.lastPizzaShotAt === undefined) this.lastPizzaShotAt = 0;
-    if (this.game.time.now - this.lastPizzaShotAt < this.SHOT_DELAY) return;
-    this.lastPizzaShotAt = this.game.time.now;
-    var pizza;
-    // Get a dead bullet from the pool
-    if(player.playerNumber == 1){
-        pizza = this.pizzaPool.getFirstDead();
-    }else{
-        pizza = this.remotePizzaPool.getFirstDead();
-    }
-    
-    this.game.physics.enable(pizza, Phaser.Physics.ARCADE);
-
-    // If there aren't any bullets available then don't shoot
-    if (pizza === null || pizza === undefined) return;
-
-    // Revive the bullet
-    // This makes the bullet "alive"
-    pizza.revive();
-    
-    
-    
-    // Bullets should kill themselves when they leave the world.
-    // Phaser takes care of this for me by setting this flag
-    // but you can do it yourself by killing the bullet if
-    // its x,y coordinates are outside of the world.
-    pizza.checkWorldBounds = true;
-    pizza.outOfBoundsKill = true;
-    
-    //puts the bullet at the players position
-    pizza.reset(player.sprite.x, player.sprite.y);
-
-    // Set the bullet position to the gun position.
-    pizza.rotation = player.sprite.rotation;
-
-    // Shoot it in the right direction
-    if(player.facingRight){
-        pizza.body.velocity.x = Math.cos(pizza.rotation) * this.BULLET_SPEED;
-    }else{
-        pizza.body.velocity.x = -Math.cos(pizza.rotation) * this.BULLET_SPEED;
-    }
-    pizza.body.velocity.y = Math.sin(pizza.rotation) * this.BULLET_SPEED;
-};
-
-///*
 
 
-GameState.prototype.punch = function(x, y, direction, islocal, character) {
-    var punch;
-    if(islocal){
-        punch = this.punchGroup.getFirstDead();
-    }else{
-        punch = this.remotePunchGroup.getFirstDead();
-    }
 
-    if(punch === null){
-        var animate;
-        punch = this.game.add.sprite(0,0,'sand');
-        animate = punch.animations.add('cone', [0], 100, false);
-        
-        punch.anchor.setTo(0.5, 0.5);
-        animate.killOnComplete = true;
-        if(islocal){this.punchGroup.add(punch);}
-        else{this.remotePunchGroup.add(punch);}
-    }
-    
-    this.game.physics.enable(punch, Phaser.Physics.ARCADE);
-    punch.body.allowGravity = false;
-    punch.body.immovable = true;
-
-    punch.revive();
-
-    punch.x = x;
-    punch.y = y;
-    punch.y += 20;
-
-    if(direction === 'left'){
-        punch.scale.x *= -1;
-        punch.x += 20;
-    }else{
-    }
-
-    punch.animations.play('cone');
-    return punch;
-
-};
-//*/
 GameState.prototype.getExplosion = function(x, y) {
     // Get the first dead explosion from the explosionGroup
     var explosion = this.explosionGroup.getFirstDead();
@@ -441,10 +305,8 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
         psand = this.game.add.sprite(0,0,'sound');
         animate = psand.animations.add('cone', [0,1,2,3,4], 100, false);
         }
-        psand.wasLeft = false;
         //psand.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
-       // psand.anchor.setTo(0.5,0.5);
         if(islocal){this.sandGroup.add(psand);}
         else{this.remoteSandGroup.add(psand);}
     }
@@ -452,19 +314,15 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     this.game.physics.enable(psand, Phaser.Physics.ARCADE);
     psand.body.allowGravity = false;
     psand.body.immovable = true;
+
     psand.revive();
 
     psand.x = x;
     psand.y = y;
 
-    if(direction === 'left'  && !psand.wasLeft){
-        psand.scale.x *= -1;
-        psand.wasLeft = true;
-    }else if(direction == 'right'){
-        psand.x += 20;
-        psand.wasLeft = false;
+    if(direction === 'left'){
+        psand.angle = 180;
     }
-        
     psand.animations.play('cone');
     return psand;
 
@@ -498,80 +356,7 @@ GameState.prototype.update = function() {
     this.remoteHealthDisplay.y = remotePlayer.sprite.y+50;
     this.healthDisplay.anchor.setTo(0.5,0.5);
     this.remoteHealthDisplay.anchor.setTo(0.5,0.5);
-    
-    //---------------Pizza Collision-------------
-    this.game.physics.arcade.collide(this.remotePizzaPool, this.platform, function(pizza, ground) {
-        // Create an explosion
-        this.getExplosion(pizza.x, pizza.y);
 
-        // Kill the bullet
-        pizza.kill();
-    }, null, this);
-    
-    //player hit by pizza
-    this.game.physics.arcade.collide(localPlayer.sprite, this.remotePizzaPool, function(player, pizza) {
-        this.getExplosion(pizza.x, pizza.y);
-        player.health -= 30;
-        if(player.health <= 0){
-            this.playerLoses(player);
-        }
-        // Kill the powerup
-        pizza.kill();
-    }, null, this);
-    
-    // Check if pizzas have collided with the ground
-    this.game.physics.arcade.collide(this.pizzaPool, this.ground, function(pizza, ground) {
-        // Create an explosion
-        this.getExplosion(pizza.x, pizza.y);
-
-        // Kill the bullet
-        pizza.kill();
-    }, null, this);
-    
-    this.game.physics.arcade.collide(this.remotePizzaPool, this.ground, function(pizza, ground) {
-        // Create an explosion
-        this.getExplosion(pizza.x, pizza.y );
-
-        // Kill the bullet
-        pizza.kill();
-    }, null, this);
-    
-    this.game.physics.arcade.collide(this.pizzaPool, this.platform, function(pizza, ground) {
-        // Create an explosion
-        this.getExplosion(pizza.x, pizza.y);
-
-        // Kill the bullet
-        pizza.kill();
-    }, null, this);
-    
-     this.game.physics.arcade.collide(remotePlayer.sprite, this.pizzaPool, function(player, pizza){
-            this.getExplosion(pizza.x, pizza.y);
-            //NEW code...need?
-        // Kill the powerup
-        pizza.kill();
-            
-        //END NEW CODE
-        }, null, this);
-    
-    //---------------End Pizza Collision------------
-
-    //---------------PUNCHING COLLISION--------------
-  this.game.physics.arcade.collide(localPlayer.sprite, this.remotePunchGroup, function(player, punch) {
-        player.health -= 10;
-        if(player.health <= 0){
-            this.playerLoses(player);
-        }
-        punch.kill();
-
-    }, null, this);
-    
-    this.game.physics.arcade.collide(remotePlayer.sprite, this.punchGroup, function(player, punch) {
-
-    punch.kill(); }, null, this);
-    //--------------END PUNCHING COLLISION-------------
-    
-    
-    
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
@@ -583,7 +368,7 @@ GameState.prototype.update = function() {
     
     this.game.physics.arcade.collide(this.remoteBulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
-        this.getExplosion(bullet.x, bullet.y );
+        this.getExplosion(bullet.x, bullet.y);
 
         // Kill the bullet
         bullet.kill();
@@ -596,22 +381,21 @@ GameState.prototype.update = function() {
         // Kill the bullet
         bullet.kill();
     }, null, this);
-    //sand fucking fuck
+
+
     this.game.physics.arcade.collide(localPlayer.sprite, this.remoteSandGroup, function(player, sand) {
         player.health -= 10;
         if(player.health <= 0){
             this.playerLoses(player);
         }
-        sand.kill();
+        sand.kill()
 
     }, null, this);
     
     this.game.physics.arcade.collide(remotePlayer.sprite, this.sandGroup, function(player, sand) {
-        console.log("hit");
 
     sand.kill(); }, null, this);
-    //END GOD
-    
+
     this.game.physics.arcade.collide(this.remoteBulletPool, this.platform, function(bullet, ground) {
         // Create an explosion
         this.getExplosion(bullet.x, bullet.y);
@@ -638,6 +422,7 @@ GameState.prototype.update = function() {
         powerup.kill();
     }, null, this);
     
+    if(remotePlayer.playerNumber == 2){
         this.game.physics.arcade.collide(remotePlayer.sprite, this.powerUps, function(player, powerup) {
             console.log("power up get");
             // Kill the powerup
@@ -645,13 +430,8 @@ GameState.prototype.update = function() {
         }, null, this);
         this.game.physics.arcade.collide(remotePlayer.sprite, this.bulletPool, function(player, bullet){
             this.getExplosion(bullet.x, bullet.y);
-        if(player.health <= 0){
-          player.kill();
-            //NEED TO SET WIN CONDITION HERE******************************************
-        }
-        bullet.kill();
-            
         }, null, this);
+    }
     localPlayer.movePlayer(this);
     localPlayer.jumpPlayer(this);
     if(remotePlayer.playerNumber == 2){
@@ -681,15 +461,12 @@ GameState.prototype.update = function() {
     if(localThrow){
         if(localPlayer.character === 'DALE' || localPlayer.character === 'BOOM'){
             if(localPlayer.facingRight){
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
             }else{
-                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
+                this.pocketSand(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
             }
-        }
-        else if(localPlayer.character === 'HANK'){
-            this.shootBullet(localPlayer);
         }else{
-            this.shootPizza(localPlayer);
+            this.shootBullet(localPlayer);
         }
         localThrow = false;
     }
@@ -697,15 +474,12 @@ GameState.prototype.update = function() {
     if(remoteThrow){
          if(remotePlayer.character === 'DALE' || remotePlayer.character === 'BOOM'){
             if(remotePlayer.facingRight){
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
             }else{
-                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
+                this.pocketSand(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
             }
-        }
-        if(localPlayer.character === 'HANK'){
-            this.shootBullet(remotePlayer);
         }else{
-            this.shootPizza(remotePlayer);
+            this.shootBullet(remotePlayer);
         }
         remoteThrow = false;
     }
@@ -720,21 +494,11 @@ GameState.prototype.update = function() {
         }
     }
     if(localAttack){
-        if(localPlayer.facingRight){
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'right',true, localPlayer.character);
-        }else{
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y, 'left',true, localPlayer.character);
-        }       
         localPlayer.basicAttackPlayer(); 
         localAttack = false;
     }
  
     if(remoteAttack){
-        if(remotePlayer.facingRight){
-        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'right',false, remotePlayer.character);
-        }else{
-        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y, 'left',false, remotePlayer.character);
-        }
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
