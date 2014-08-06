@@ -41,8 +41,8 @@ GameState.prototype.create = function () {
     
     //Audio
     this.music = this.game.add.audio('themeMusic');
-    //this.music.play();
-    //this.music.volume = .5;
+    this.music.play();
+    this.music.volume = .5;
     
     
     this.sfxBoom = this.game.add.audio('sfxExplosion');
