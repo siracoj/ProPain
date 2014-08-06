@@ -18,7 +18,8 @@ function Player(playerNumber, character, id, x, y) {
     this.canVariableJump = true;
     this.x = x;
     this.y = y;
-    
+    this.isPunchingLeft =false;
+    this.isPunchingRight= false;
     
 };
 
@@ -136,9 +137,13 @@ Player.prototype.movePlayer = function(GameState){
 
 Player.prototype.basicAttackPlayer = function(GameState){
     if(this.facingRight){
+            this.isPunchingLeft=true;
             this.sprite.animations.play('punchRight');
+            this.isPunchingLeft=false;
         }else{
+            this.isPunchingRight=true;
             this.sprite.animations.play('punchLeft');
+            this.isPunchingRight=false;
         }
     
 }

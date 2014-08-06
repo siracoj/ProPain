@@ -198,6 +198,13 @@ GameState.prototype.create = function () {
     
     //----------End of pizza creation---------------
     
+    
+    //--------------Punch -------------------
+    this.punchGroup = this.game.add.group();
+    
+    //----------End of punch creation---------------
+    
+    
     //----------Create PowerUp----------
     
     this.powerUp.enablePowerUp(this);
@@ -336,6 +343,44 @@ GameState.prototype.shootPizza = function(player) {
     pizza.body.velocity.y = Math.sin(pizza.rotation) * this.BULLET_SPEED;
 };
 
+
+
+
+GameState.prototype.punch = function(x, y, direction, islocal, character) {
+    var punch;
+    if(islocal){
+        punch = this.punchGroup.getFirstDead();
+    }else{
+        punch = this.remotePunchGroup.getFirstDead();
+    }
+
+    if(punch === null){
+        var animate;
+        punch = this.game.add.sprite(0,0,'sand');
+        animate = punch.animations.add('cone', [0], 100, false);
+        
+        //punch.anchor.setTo(0.5, 0.5);
+        animate.killOnComplete = true;
+        if(islocal){this.punchGroup.add(punch);}
+        else{this.remotePunchGroup.add(punch);}
+    }
+    
+    this.game.physics.enable(punch, Phaser.Physics.ARCADE);
+    punch.body.allowGravity = false;
+    punch.body.immovable = true;
+
+    punch.revive();
+
+    punch.x = x;
+    punch.y = y;
+
+    if(direction === 'left'){
+       punch.angle = 180;
+    }
+    punch.animations.play('cone');
+    return punch;
+
+};
 
 GameState.prototype.getExplosion = function(x, y) {
     // Get the first dead explosion from the explosionGroup
@@ -501,6 +546,23 @@ GameState.prototype.update = function() {
     
     //---------------End Pizza Collision------------
 
+    //---------------PUNCHING COLLISION--------------
+  this.game.physics.arcade.collide(localPlayer.sprite, this.remotePunchGroup, function(player, punch) {
+        player.health -= 10;
+        if(player.health <= 0){
+            this.playerLoses(player);
+        }
+        punch.kill();
+
+    }, null, this);
+    
+    this.game.physics.arcade.collide(remotePlayer.sprite, this.punchGroup, function(player, punch) {
+
+    punch.kill(); }, null, this);
+    //--------------END PUNCHING COLLISION-------------
+    
+    
+    
     // Check if bullets have collided with the ground
     this.game.physics.arcade.collide(this.bulletPool, this.ground, function(bullet, ground) {
         // Create an explosion
@@ -649,10 +711,12 @@ GameState.prototype.update = function() {
     }
     if(localAttack){
         localPlayer.basicAttackPlayer(); 
+        this.punch();
         localAttack = false;
     }
  
     if(remoteAttack){
+        this.punch();
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
