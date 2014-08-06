@@ -27,7 +27,7 @@ LoadState.prototype.preload = function() {
     this.game.load.spritesheet('sound', 'assets/gfx/soundwave.png', 29, 28);
     this.game.load.spritesheet('DALE', '/assets/gfx/dalesprite.png',32,40,17);
     this.game.load.spritesheet('BOOM', '/assets/gfx/boomhauersprite.png',32,40,17);
-    this.game.load.spritesheet('BILL', '/assets/gfx/billsprite.png',32,40,17);
+    this.game.load.spritesheet('BILL', '/assets/gfx/billsprite2.png',32,40,17);
     this.game.load.image('bullet', 'assets/gfx/tank.png');
     this.game.load.image('pizza', 'assets/gfx/pizza2.png');
     this.game.load.image('background', 'assets/gfx/background.jpg'); 
