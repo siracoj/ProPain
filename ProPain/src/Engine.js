@@ -357,7 +357,7 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
     if(punch === null){
         var animate;
         punch = this.game.add.sprite(0,0,'sand');
-        animate = punch.animations.add('cone', [0], 100, false);
+        animate = punch.animations.add('cone', [0,1], 100, false);
         
         //punch.anchor.setTo(0.5, 0.5);
         animate.killOnComplete = true;
@@ -375,9 +375,11 @@ GameState.prototype.punch = function(x, y, direction, islocal, character) {
     punch.y = y;
 
     if(direction === 'left'){
-       punch.angle = 180;
+    punch.angle = 180;
+    }else{
+        punch.x += 20;
     }
-    punch.animations.play('cone');
+        punch.animations.play('cone');
     return punch;
 
 };
@@ -453,7 +455,8 @@ GameState.prototype.pocketSand = function(x, y, direction, islocal, character) {
     psand.y = y;
 
     if(direction === 'left'){
-        psand.angle = 180;
+    psand.angle = 180;
+    }else{
     }
     psand.animations.play('cone');
     return psand;
@@ -711,13 +714,21 @@ GameState.prototype.update = function() {
         }
     }
     if(localAttack){
-        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',false, localPlayer.character);
+        if(localPlayer.facingRight){
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'right',true, localPlayer.character);
+        }else{
+        this.punch(localPlayer.sprite.x, localPlayer.sprite.y+40, 'left',true, localPlayer.character);
+        } 
         localPlayer.basicAttackPlayer(); 
         localAttack = false;
     }
  
     if(remoteAttack){
+        if(localPlayer.facingRight){
         this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'right',false, remotePlayer.character);
+        }else{
+        this.punch(remotePlayer.sprite.x, remotePlayer.sprite.y+40, 'left',false, remotePlayer.character);
+        }
         remotePlayer.basicAttackPlayer();
         remoteAttack = false;
     }
