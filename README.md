@@ -3,10 +3,6 @@ Propain
 
 -Starting A Game
 ######################
-Start web based game
-1) Go to http://www.propaingame.com to start the game
-2) either join an existing game or create a new one if no game is avaliable
-3) When creating a game you will have to wait until another player is found before you're match will start
 
 Start a local game
 1)Download node js at the following website: http://nodejs.org/download/ and install it using all the default settings
